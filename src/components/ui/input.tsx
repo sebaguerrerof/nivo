@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode } from 'react'
+import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -7,7 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string
 }
 
-export function Input({ id, label, error, className, endAdornment, ...props }: InputProps) {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({ id, label, error, className, endAdornment, ...props }, ref) {
   const inputId = id ?? props.name
 
   return (
@@ -15,6 +15,7 @@ export function Input({ id, label, error, className, endAdornment, ...props }: I
       {label}
       <span className="relative block">
         <input
+          ref={ref}
           id={inputId}
           className={cn(
             'min-h-12 w-full rounded-xl border bg-[var(--surface)] px-3.5 text-base text-[var(--foreground)] outline-none transition placeholder:text-[var(--foreground-subtle)] focus:border-teal-600 focus:ring-2 focus:ring-teal-600/15 disabled:cursor-not-allowed disabled:opacity-60',
@@ -35,4 +36,6 @@ export function Input({ id, label, error, className, endAdornment, ...props }: I
       ) : null}
     </label>
   )
-}
+})
+
+Input.displayName = 'Input'

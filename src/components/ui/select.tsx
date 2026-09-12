@@ -1,4 +1,4 @@
-import type { SelectHTMLAttributes } from 'react'
+import { forwardRef, type SelectHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
@@ -6,13 +6,14 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string
 }
 
-export function Select({ id, label, error, className, children, ...props }: SelectProps) {
+export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select({ id, label, error, className, children, ...props }, ref) {
   const selectId = id ?? props.name
 
   return (
     <label className="grid gap-1.5 text-sm font-medium text-[var(--foreground)]" htmlFor={selectId}>
       {label}
       <select
+        ref={ref}
         id={selectId}
         className={cn(
           'min-h-11 w-full rounded-xl border bg-[var(--surface)] px-3 text-base text-[var(--foreground)] outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-600/15 disabled:cursor-not-allowed disabled:opacity-60',
@@ -32,4 +33,6 @@ export function Select({ id, label, error, className, children, ...props }: Sele
       ) : null}
     </label>
   )
-}
+})
+
+Select.displayName = 'Select'
