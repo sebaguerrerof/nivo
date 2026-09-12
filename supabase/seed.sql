@@ -1,0 +1,3 @@
+-- Fase 1 no inserta datos de usuario. Los perfiles nacen únicamente mediante
+-- el trigger `handle_new_user` al crear una cuenta en Supabase Auth.
+-- Las categorías y catálogos llegarán con sus respectivas migraciones.
