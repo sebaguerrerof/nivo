@@ -16,10 +16,12 @@ port = 54323
 
 [auth]
 enabled = true
-site_url = "http://localhost:5173"
+site_url = "https://nivo-lake.vercel.app"
 additional_redirect_urls = [
   "http://localhost:5173/auth/callback",
-  "http://localhost:5173/auth/reset-password"
+  "http://localhost:5173/auth/reset-password",
+  "https://nivo-lake.vercel.app/auth/callback",
+  "https://nivo-lake.vercel.app/auth/reset-password"
 ]
 
 [auth.email]
