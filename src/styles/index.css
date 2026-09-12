@@ -84,8 +84,19 @@ ion-content {
   animation: rise-in var(--transition-base) both;
 }
 
+@keyframes activity-complete-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.012); }
+  100% { transform: scale(1); }
+}
+
+.activity-complete {
+  animation: activity-complete-pop 260ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-rise-in {
+  .animate-rise-in,
+  .activity-complete {
     animation: none;
   }
 }

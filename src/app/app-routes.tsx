@@ -8,6 +8,7 @@ import { RecoverPasswordPage } from '@/features/auth/pages/recover-password-page
 import { RegisterPage } from '@/features/auth/pages/register-page'
 import { ResetPasswordPage } from '@/features/auth/pages/reset-password-page'
 import { DashboardPage } from '@/features/dashboard/dashboard-page'
+import { TodayPage } from '@/features/planning/pages/today-page'
 import { ProfilePage } from '@/features/profile/profile-page'
 
 function PublicOnlyRoute({ children }: { children: JSX.Element }) {
@@ -29,6 +30,7 @@ function ProtectedRoutes() {
     <AppShell>
       <Switch>
         <Route component={DashboardPage} exact path="/dashboard" />
+        <Route component={TodayPage} exact path="/today" />
         <Route component={ProfilePage} exact path="/profile" />
         <Redirect to="/dashboard" />
       </Switch>
@@ -41,24 +43,10 @@ export function AppRoutes() {
     <Switch>
       <Route component={AuthCallbackPage} exact path="/auth/callback" />
       <Route component={ResetPasswordPage} exact path="/auth/reset-password" />
-      <Route exact path="/login">
-        <PublicOnlyRoute>
-          <LoginPage />
-        </PublicOnlyRoute>
-      </Route>
-      <Route exact path="/register">
-        <PublicOnlyRoute>
-          <RegisterPage />
-        </PublicOnlyRoute>
-      </Route>
-      <Route exact path="/recover-password">
-        <PublicOnlyRoute>
-          <RecoverPasswordPage />
-        </PublicOnlyRoute>
-      </Route>
-      <Route path="/">
-        <ProtectedRoutes />
-      </Route>
+      <Route exact path="/login"><PublicOnlyRoute><LoginPage /></PublicOnlyRoute></Route>
+      <Route exact path="/register"><PublicOnlyRoute><RegisterPage /></PublicOnlyRoute></Route>
+      <Route exact path="/recover-password"><PublicOnlyRoute><RecoverPasswordPage /></PublicOnlyRoute></Route>
+      <Route path="/"><ProtectedRoutes /></Route>
     </Switch>
   )
 }
