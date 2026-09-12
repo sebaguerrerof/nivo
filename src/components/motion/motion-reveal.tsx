@@ -13,10 +13,10 @@ export function MotionReveal({ children, className, delay = 0 }: MotionRevealPro
 
   return (
     <m.div
-      animate={{ opacity: 1, y: 0 }}
+      animate={reducedMotion ? undefined : { y: 0 }}
       className={cn(className)}
-      initial={reducedMotion ? false : { opacity: 0, y: 12 }}
-      transition={reducedMotion ? { duration: 0 } : { delay, duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
+      initial={false}
+      transition={{ delay, duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </m.div>
