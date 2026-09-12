@@ -64,7 +64,7 @@ export function ResetPasswordPage() {
             type="password"
             {...form.register('confirmPassword')}
           />
-          <Button className="mt-1 w-full" loading={form.formState.isSubmitting || canReset === null} type="submit">
+          <Button className="mt-1 min-h-12 w-full" loading={form.formState.isSubmitting || canReset === null} type="submit">
             Guardar nueva contraseña
           </Button>
         </form>

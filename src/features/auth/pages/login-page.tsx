@@ -1,11 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Eye, EyeOff, LockKeyhole, ShieldCheck } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useHistory } from 'react-router-dom'
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { type EmailOnlyFormValues, type LoginFormValues, emailOnlySchema, loginSchema } from '@/features/auth/auth.schemas'
+import { type LoginFormValues, loginSchema } from '@/features/auth/auth.schemas'
 import { AuthLinks } from '@/features/auth/components/auth-links'
 import { AuthLayout } from '@/features/auth/components/auth-layout'
 import { authService, getAuthErrorMessage } from '@/services/auth.service'
@@ -13,14 +14,10 @@ import { authService, getAuthErrorMessage } from '@/services/auth.service'
 export function LoginPage() {
   const history = useHistory()
   const [formError, setFormError] = useState<string | null>(null)
-  const [magicLinkSent, setMagicLinkSent] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
-  })
-  const magicForm = useForm<EmailOnlyFormValues>({
-    resolver: zodResolver(emailOnlySchema),
-    defaultValues: { email: '' },
   })
 
   const onSubmit = loginForm.handleSubmit(async (values) => {
@@ -33,20 +30,9 @@ export function LoginPage() {
     }
   })
 
-  const onMagicLink = magicForm.handleSubmit(async ({ email }) => {
-    setFormError(null)
-    setMagicLinkSent(false)
-    try {
-      await authService.sendMagicLink(email)
-      setMagicLinkSent(true)
-    } catch (error) {
-      setFormError(getAuthErrorMessage(error))
-    }
-  })
-
   return (
-    <AuthLayout eyebrow="BIENVENIDO DE VUELTA" title="Entra a tu espacio." description="Continúa donde lo dejaste, a tu propio ritmo.">
-      <form className="grid gap-4" noValidate onSubmit={onSubmit}>
+    <AuthLayout eyebrow="BIENVENIDO DE VUELTA" title="Qué bueno verte." description="Inicia sesión para retomar tu día con claridad.">
+      <form className="grid gap-5" noValidate onSubmit={onSubmit}>
         {formError ? <Alert variant="error">{formError}</Alert> : null}
         <Input
           autoComplete="email"
@@ -58,47 +44,38 @@ export function LoginPage() {
         />
         <Input
           autoComplete="current-password"
+          endAdornment={
+            <button
+              aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+              className="grid size-9 place-items-center rounded-lg text-[var(--foreground-subtle)] transition hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600"
+              onClick={() => setShowPassword((visible) => !visible)}
+              type="button"
+            >
+              {showPassword ? <EyeOff aria-hidden="true" className="size-4" /> : <Eye aria-hidden="true" className="size-4" />}
+            </button>
+          }
           error={loginForm.formState.errors.password?.message}
           label="Contraseña"
-          type="password"
+          placeholder="Tu contraseña"
+          type={showPassword ? 'text' : 'password'}
           {...loginForm.register('password')}
         />
-        <div className="flex justify-end">
-          <Link className="text-sm font-semibold text-teal-700 hover:text-teal-800 dark:text-teal-400" to="/recover-password">
+        <div className="-mt-1 flex justify-end">
+          <Link className="text-sm font-semibold text-teal-700 transition hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300" to="/recover-password">
             ¿Olvidaste tu contraseña?
           </Link>
         </div>
-        <Button className="mt-1 w-full" loading={loginForm.formState.isSubmitting} type="submit">
-          Iniciar sesión
+        <Button className="mt-1 min-h-12 w-full" loading={loginForm.formState.isSubmitting} type="submit">
+          <LockKeyhole aria-hidden="true" className="size-4" />
+          Entrar a Nivo
         </Button>
       </form>
 
-      <div className="my-7 flex items-center gap-3 text-xs text-[var(--foreground-subtle)]">
-        <span className="h-px flex-1 bg-[var(--border)]" />
-        o entra sin contraseña
-        <span className="h-px flex-1 bg-[var(--border)]" />
-      </div>
-
-      <form noValidate onSubmit={onMagicLink}>
-        {magicLinkSent ? <Alert variant="success">Revisa tu correo para continuar con el enlace seguro.</Alert> : null}
-        <div className="mt-3 flex gap-2">
-          <Input
-            aria-label="Correo para magic link"
-            autoComplete="email"
-            className="min-w-0"
-            error={magicForm.formState.errors.email?.message}
-            label=""
-            placeholder="nombre@correo.com"
-            type="email"
-            {...magicForm.register('email')}
-          />
-          <Button loading={magicForm.formState.isSubmitting} type="submit" variant="secondary">
-            Enviar enlace
-          </Button>
+      <div className="mt-7 border-t border-[var(--border)] pt-6">
+        <div className="mb-6 flex items-center justify-center gap-2 text-xs text-[var(--foreground-subtle)]">
+          <ShieldCheck aria-hidden="true" className="size-4 text-teal-700 dark:text-teal-400" />
+          Tu información se mantiene privada.
         </div>
-      </form>
-
-      <div className="mt-8">
         <AuthLinks />
       </div>
     </AuthLayout>

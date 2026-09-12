@@ -41,7 +41,7 @@ export function RecoverPasswordPage() {
           type="email"
           {...form.register('email')}
         />
-        <Button className="mt-1 w-full" loading={form.formState.isSubmitting} type="submit">
+        <Button className="mt-1 min-h-12 w-full" loading={form.formState.isSubmitting} type="submit">
           Enviar enlace
         </Button>
       </form>

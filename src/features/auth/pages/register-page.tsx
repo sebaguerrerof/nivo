@@ -74,7 +74,7 @@ export function RegisterPage() {
             type="password"
             {...form.register('confirmPassword')}
           />
-          <Button className="mt-1 w-full" loading={form.formState.isSubmitting} type="submit">
+          <Button className="mt-1 min-h-12 w-full" loading={form.formState.isSubmitting} type="submit">
             Crear cuenta
           </Button>
           <p className="text-center text-xs leading-5 text-[var(--foreground-subtle)]">

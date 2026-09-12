@@ -1,14 +1,14 @@
-# Nivo — Fase 1
+# Nivo — Fases 1 y 2
 
 Fundación de una aplicación personal mobile-first construida con Ionic React, TypeScript estricto, Vite, Tailwind CSS y Supabase.
 
 ## Alcance actual
 
-- Registro, inicio/cierre de sesión, magic link y recuperación de contraseña con Supabase Auth.
+- Registro, inicio/cierre de sesión y recuperación de contraseña con Supabase Auth.
 - Sesión persistente y rutas protegidas.
 - Perfil privado: nombre, apellido, moneda, zona horaria y apariencia.
-- Dashboard vacío con saludo, fecha y estado sin planificación.
-- Navegación inferior en móvil y sidebar en escritorio. Las áreas posteriores se muestran como próximas, sin implementar rutas ni datos de Fase 2+.
+- Dashboard con resumen del día y acceso a la planificación diaria.
+- Planificación diaria privada: plan, hasta tres objetivos, actividades, timeline, progreso derivado y cierre del día.
 - Design system base (botones, inputs, selects, alertas y tarjetas), tema claro/oscuro/sistema y shell PWA.
 - TanStack Query preparado para estado remoto y Zustand limitado a la preferencia local de tema.
 
@@ -28,7 +28,7 @@ Fundación de una aplicación personal mobile-first construida con Ionic React, 
    supabase db push
    ```
 
-   También puedes pegar el contenido de `supabase/migrations/20260912000100_create_profiles.sql` en el SQL Editor de Supabase, conservando la migración en Git como fuente de verdad.
+   Las migraciones versionadas son la fuente de verdad; no apliques cambios manuales que queden fuera de Git.
 
 4. En Supabase Auth configura:
 
@@ -62,7 +62,8 @@ La migración de Fase 1 crea `public.profiles`, un trigger que inicializa el per
 ```bash
 npm run typecheck
 npm run lint
-npm run build
+npm run test
+ npm run build
 ```
 
 ## Deploy en Vercel

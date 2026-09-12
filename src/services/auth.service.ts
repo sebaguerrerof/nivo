@@ -83,18 +83,6 @@ export const authService = {
     }
   },
 
-  async sendMagicLink(email: string) {
-    const { error } = await getSupabaseClient().auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: redirectUrl('/auth/callback'),
-      },
-    })
-
-    if (error) {
-      throw error
-    }
-  },
 
   async updatePassword(password: string) {
     const { data, error } = await getSupabaseClient().auth.updateUser({ password })
