@@ -76,6 +76,35 @@ export const planningService = {
     return data as DailyPlan
   },
 
+  async fillEmptyDailyPlanWithContent(planId: string, input: DailyPlanDraftInput): Promise<DailyPlan> {
+    const plan = toPlanPayload(input.plan)
+    const { data, error } = await getSupabaseClient()
+      .rpc('fill_empty_daily_plan_with_content', {
+        p_plan_id: planId,
+        p_wake_up_time: plan.wake_up_time,
+        p_recovery_activity: plan.recovery_activity,
+        p_responsibilities: plan.responsibilities,
+        p_family_connection: plan.family_connection,
+        p_main_risk: plan.main_risk,
+        p_risk_strategy: plan.risk_strategy,
+        p_daily_commitment: plan.daily_commitment,
+        p_notes: plan.notes,
+        p_goals: input.goals.map((goal) => ({ title: goal.title.trim() })),
+        p_activities: input.activities.map((activity) => ({
+          title: activity.title.trim(),
+          description: activity.description?.trim() || null,
+          category: activity.category,
+          start_at: activity.startAt ?? null,
+          end_at: activity.endAt ?? null,
+          priority: activity.priority,
+          status: activity.status ?? 'pending',
+        })),
+      })
+      .single()
+
+    if (error) throw error
+    return data as DailyPlan
+  },
   async updateDailyPlan(userId: string, planId: string, input: DailyPlanInput): Promise<DailyPlan> {
     const { data, error } = await getSupabaseClient()
       .from('daily_plans')

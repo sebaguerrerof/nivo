@@ -43,6 +43,13 @@ export function useCreateDailyPlanWithContent(scope: PlanningScope) {
   })
 }
 
+export function useFillEmptyDailyPlanWithContent(scope: PlanningScope) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ planId, input }: { planId: string; input: DailyPlanDraftInput }) => planningService.fillEmptyDailyPlanWithContent(planId, input),
+    onSuccess: () => invalidatePlan(queryClient, scope),
+  })
+}
 export function useDeleteDailyPlan(scope: PlanningScope) {
   const queryClient = useQueryClient()
   const key = dailyPlanKeys.byDate(scope.userId, scope.date)
