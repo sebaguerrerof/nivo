@@ -3,6 +3,8 @@ import type { Activity } from '@/types/planning'
 import {
   getActivityTime,
   getDailyProgress,
+  getDateFromPlanSearch,
+  getNextCalendarDate,
   getNextGoalPosition,
   getTimelineActivities,
   getTodayInTimeZone,
@@ -54,6 +56,14 @@ describe('planning utilities', () => {
     expect(getTodayInTimeZone('America/Santiago', new Date('2026-09-12T02:30:00.000Z'))).toBe('2026-09-11')
     const instant = toActivityInstant('2026-09-12', '09:30', 'America/Santiago')
     expect(getActivityTime(instant, 'America/Santiago')).toBe('09:30')
+  })
+
+  it('validates date parameters and calculates the following calendar date', () => {
+    expect(getNextCalendarDate('2026-09-12')).toBe('2026-09-13')
+    expect(getNextCalendarDate('2026-12-31')).toBe('2027-01-01')
+    expect(getDateFromPlanSearch('?date=2026-09-13')).toBe('2026-09-13')
+    expect(getDateFromPlanSearch('?date=2026-02-29')).toBeNull()
+    expect(getDateFromPlanSearch('?date=not-a-date')).toBeNull()
   })
 
   it('toggles completion and assigns the next goal position', () => {

@@ -16,6 +16,11 @@ const optionalText = (maximum: number) => z.string().trim().max(maximum, `Máxim
 export const dailyPlanSchema = z.object({
   date: dateSchema,
   wakeUpTime: optionalTimeSchema,
+  recoveryActivity: optionalText(500),
+  responsibilities: optionalText(1_000),
+  familyConnection: optionalText(500),
+  mainRisk: optionalText(600),
+  riskStrategy: optionalText(600),
   dailyCommitment: optionalText(280),
   notes: optionalText(2_000),
 })

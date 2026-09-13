@@ -1,6 +1,6 @@
-# Nivo — Fases 1 y 2
+# Nivo — Fases 1 y 2 + planificación asistida
 
-Fundación de una aplicación personal mobile-first construida con Ionic React, TypeScript estricto, Vite, Tailwind CSS y Supabase.
+Aplicación personal mobile-first construida con Ionic React, TypeScript estricto, Vite, Tailwind CSS, Supabase y Vercel.
 
 ## Alcance actual
 
@@ -8,9 +8,12 @@ Fundación de una aplicación personal mobile-first construida con Ionic React, 
 - Sesión persistente y rutas protegidas.
 - Perfil privado: nombre, apellido, moneda, zona horaria y apariencia.
 - Dashboard con resumen del día y acceso a la planificación diaria.
-- Planificación diaria privada: plan, hasta tres objetivos, actividades, timeline, progreso derivado y cierre del día.
+- Planificación privada: plan, hasta tres objetivos, actividades, timeline, progreso derivado y cierre del día.
+- Planificación asistida: pegar texto o describir el próximo día, revisar un borrador editable y confirmarlo antes de guardarlo.
 - Design system base (botones, inputs, selects, alertas y tarjetas), tema claro/oscuro/sistema y shell PWA.
-- TanStack Query preparado para estado remoto y Zustand limitado a la preferencia local de tema.
+- TanStack Query para estado remoto y Zustand limitado a la preferencia local de tema.
+
+No se han implementado todavía gamificación, finanzas, pagos, gráficos ni automatizaciones de IA que modifiquen datos sin confirmación.
 
 ## Inicio local
 
@@ -20,9 +23,9 @@ Fundación de una aplicación personal mobile-first construida con Ionic React, 
    npm install
    ```
 
-2. Copia `.env.example` a `.env.local` y completa los valores de tu proyecto Supabase.
+2. Copia `.env.example` a `.env.local` y completa los valores de tu proyecto Supabase. Para probar la planificación asistida en local, agrega también tus variables de OpenAI solo en ese archivo local.
 
-3. Aplica la migración versionada. Con Supabase CLI enlazado al proyecto:
+3. Aplica las migraciones versionadas. Con Supabase CLI enlazado al proyecto:
 
    ```bash
    supabase db push
@@ -44,16 +47,26 @@ Fundación de una aplicación personal mobile-first construida con Ionic React, 
 
 ## Variables de entorno
 
-| Variable | Descripción |
-| --- | --- |
-| `VITE_SUPABASE_URL` | URL del proyecto en Supabase. |
-| `VITE_SUPABASE_ANON_KEY` | Clave pública anónima/publishable del proyecto. |
+| Variable | Dónde se usa | Descripción |
+| --- | --- | --- |
+| `VITE_SUPABASE_URL` | Navegador y función de Vercel | URL del proyecto Supabase. |
+| `VITE_SUPABASE_ANON_KEY` | Navegador y función de Vercel | Clave pública anónima/publishable de Supabase. |
+| `OPENAI_API_KEY` | Solo función de Vercel | Clave de OpenAI para generar borradores; nunca debe llevar prefijo `VITE_`. |
+| `OPENAI_MODEL` | Solo función de Vercel | Opcional. Por defecto: `gpt-5.6-luna`. |
 
 Nunca uses `SUPABASE_SERVICE_ROLE_KEY` en el frontend ni la declares con prefijo `VITE_`.
 
+## Planificación asistida y privacidad
+
+`api/plan-draft.ts` es una función de Vercel que exige una sesión de Supabase válida antes de solicitar el borrador a OpenAI. Usa salida JSON estricta y `store: false`.
+
+El texto de origen se envía únicamente cuando la persona pulsa **Generar borrador** y no se guarda en Nivo. Solo después de revisar y pulsar **Guardar este plan** se persisten los campos confirmados, objetivos y actividades. La migración `20260912000300_add_guided_daily_planning.sql` los inserta en una única transacción mediante una función `SECURITY INVOKER`, por lo que se aplican las políticas RLS existentes.
+
 ## Base de datos y seguridad
 
-La migración de Fase 1 crea `public.profiles`, un trigger que inicializa el perfil al crear un usuario de Auth y políticas RLS de `SELECT`, `INSERT`, `UPDATE` y `DELETE` limitadas a `auth.uid() = user_id`. El frontend encapsula el acceso en `src/services/profile.service.ts`; los componentes visuales no consultan Supabase directamente.
+La migración de Fase 1 crea `public.profiles`, un trigger que inicializa el perfil al crear un usuario de Auth y políticas RLS de `SELECT`, `INSERT`, `UPDATE` y `DELETE` limitadas a `auth.uid() = user_id`.
+
+La Fase 2 crea `daily_plans`, `daily_goals`, `activities` y `daily_reflections`, con RLS por fila y comprobación de propiedad del plan padre en escrituras de entidades hijas. La migración guiada agrega recuperación, responsabilidades, familia, riesgo y estrategia sin alterar dichas políticas.
 
 `supabase/seed.sql` no inserta usuarios: los perfiles solo se generan mediante Auth. Los catálogos de dominio se agregarán en sus fases correspondientes.
 
@@ -63,9 +76,16 @@ La migración de Fase 1 crea `public.profiles`, un trigger que inicializa el per
 npm run typecheck
 npm run lint
 npm run test
- npm run build
+npm run build
 ```
 
 ## Deploy en Vercel
 
-Importa el repositorio, configura `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` en Production, Preview y Development. El archivo `vercel.json` mantiene las rutas de la SPA disponibles al recargar una URL protegida. Después del primer deploy, agrega también su dominio a las Redirect URLs de Supabase Auth.
+Configura en **Production**, **Preview** y **Development**:
+
+1. `VITE_SUPABASE_URL`
+2. `VITE_SUPABASE_ANON_KEY`
+3. `OPENAI_API_KEY` (solo si deseas habilitar la planificación asistida)
+4. `OPENAI_MODEL` (opcional)
+
+El archivo `vercel.json` da prioridad al sistema de archivos para que `/api/plan-draft` se ejecute como función y conserva el fallback de la SPA para rutas del cliente. Después del deploy, agrega el dominio de producción a las Redirect URLs de Supabase Auth.

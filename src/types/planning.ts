@@ -11,8 +11,14 @@ export interface DailyPlan {
   user_id: string
   date: string
   wake_up_time: string | null
+  recovery_activity: string | null
+  responsibilities: string | null
+  family_connection: string | null
+  main_risk: string | null
+  risk_strategy: string | null
   daily_commitment: string | null
   notes: string | null
+  daily_score: number
   closed_at: string | null
   created_at: string
   updated_at: string
@@ -67,6 +73,11 @@ export interface DailyPlanBundle {
 export interface DailyPlanInput {
   date: string
   wakeUpTime?: string | null
+  recoveryActivity?: string | null
+  responsibilities?: string | null
+  familyConnection?: string | null
+  mainRisk?: string | null
+  riskStrategy?: string | null
   dailyCommitment?: string | null
   notes?: string | null
 }
@@ -84,6 +95,12 @@ export interface ActivityInput {
   endAt?: string | null
   priority: ActivityPriority
   status?: ActivityStatus
+}
+
+export interface DailyPlanDraftInput {
+  plan: DailyPlanInput
+  goals: GoalInput[]
+  activities: ActivityInput[]
 }
 
 export interface ReflectionInput {

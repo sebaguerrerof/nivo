@@ -1,8 +1,8 @@
 import { getSupabaseClient } from '@/lib/supabase/client'
 import { activityService } from '@/services/activity.service'
-import type { DailyGoal, DailyPlan, DailyPlanBundle, DailyPlanInput, DailyReflection, GoalInput, ReflectionInput } from '@/types/planning'
+import type { DailyGoal, DailyPlan, DailyPlanBundle, DailyPlanDraftInput, DailyPlanInput, DailyReflection, GoalInput, ReflectionInput } from '@/types/planning'
 
-const planColumns = 'id, user_id, date, wake_up_time, daily_commitment, notes, closed_at, created_at, updated_at'
+const planColumns = 'id, user_id, date, wake_up_time, recovery_activity, responsibilities, family_connection, main_risk, risk_strategy, daily_commitment, notes, daily_score, closed_at, created_at, updated_at'
 const goalColumns = 'id, daily_plan_id, user_id, title, position, completed, completed_at, created_at, updated_at'
 const reflectionColumns = 'id, user_id, daily_plan_id, what_went_well, what_to_improve, mood_score, created_at, updated_at'
 
@@ -10,6 +10,11 @@ function toPlanPayload(input: DailyPlanInput) {
   return {
     date: input.date,
     wake_up_time: input.wakeUpTime || null,
+    recovery_activity: input.recoveryActivity?.trim() || null,
+    responsibilities: input.responsibilities?.trim() || null,
+    family_connection: input.familyConnection?.trim() || null,
+    main_risk: input.mainRisk?.trim() || null,
+    risk_strategy: input.riskStrategy?.trim() || null,
     daily_commitment: input.dailyCommitment?.trim() || null,
     notes: input.notes?.trim() || null,
   }
@@ -41,6 +46,36 @@ export const planningService = {
     return data as DailyPlan
   },
 
+  async createDailyPlanWithContent(input: DailyPlanDraftInput): Promise<DailyPlan> {
+    const plan = toPlanPayload(input.plan)
+    const { data, error } = await getSupabaseClient()
+      .rpc('create_daily_plan_with_content', {
+        p_date: plan.date,
+        p_wake_up_time: plan.wake_up_time,
+        p_recovery_activity: plan.recovery_activity,
+        p_responsibilities: plan.responsibilities,
+        p_family_connection: plan.family_connection,
+        p_main_risk: plan.main_risk,
+        p_risk_strategy: plan.risk_strategy,
+        p_daily_commitment: plan.daily_commitment,
+        p_notes: plan.notes,
+        p_goals: input.goals.map((goal) => ({ title: goal.title.trim() })),
+        p_activities: input.activities.map((activity) => ({
+          title: activity.title.trim(),
+          description: activity.description?.trim() || null,
+          category: activity.category,
+          start_at: activity.startAt ?? null,
+          end_at: activity.endAt ?? null,
+          priority: activity.priority,
+          status: activity.status ?? 'pending',
+        })),
+      })
+      .single()
+
+    if (error) throw error
+    return data as DailyPlan
+  },
+
   async updateDailyPlan(userId: string, planId: string, input: DailyPlanInput): Promise<DailyPlan> {
     const { data, error } = await getSupabaseClient()
       .from('daily_plans')
@@ -52,6 +87,11 @@ export const planningService = {
 
     if (error) throw error
     return data as DailyPlan
+  },
+
+  async deleteDailyPlan(userId: string, planId: string) {
+    const { error } = await getSupabaseClient().from('daily_plans').delete().eq('id', planId).eq('user_id', userId)
+    if (error) throw error
   },
 
   async getGoals(planId: string): Promise<DailyGoal[]> {

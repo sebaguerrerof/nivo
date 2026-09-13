@@ -25,6 +25,28 @@ export function getTodayInTimeZone(timezone = DEFAULT_TIMEZONE, now = new Date()
   return `${getPart(parts, 'year')}-${getPart(parts, 'month')}-${getPart(parts, 'day')}`
 }
 
+export function isCalendarDate(value: string | null | undefined) {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day
+}
+
+export function getNextCalendarDate(date: string) {
+  if (!isCalendarDate(date)) return date
+
+  const [year, month, day] = date.split('-').map(Number)
+  const next = new Date(Date.UTC(year, month - 1, day + 1))
+  return next.toISOString().slice(0, 10)
+}
+
+export function getDateFromPlanSearch(search: string) {
+  const date = new URLSearchParams(search).get('date')
+  return isCalendarDate(date) ? date : null
+}
+
 export function formatPlanDate(date: string, timezone = DEFAULT_TIMEZONE) {
   const safeDate = new Date(`${date}T12:00:00Z`)
   const value = formatInTimeZone(safeDate, timezone, "EEEE d 'de' MMMM", { locale: es })
