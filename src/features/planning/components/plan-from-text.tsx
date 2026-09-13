@@ -30,7 +30,7 @@ function asNullable(value: string) {
 
 type EditablePlanField = 'wakeUpTime' | 'recoveryActivity' | 'responsibilities' | 'familyConnection' | 'mainRisk' | 'riskStrategy' | 'dailyCommitment' | 'notes'
 
-function PlanDraftReview({ draft, isSaving, onCancel, onSave }: { draft: PlanDraft; isSaving: boolean; onCancel: () => void; onSave: (draft: PlanDraft) => Promise<unknown> }) {
+export function PlanDraftReview({ draft, isSaving, onCancel, onSave }: { draft: PlanDraft; isSaving: boolean; onCancel: () => void; onSave: (draft: PlanDraft) => Promise<unknown> }) {
   const [editableDraft, setEditableDraft] = useState<PlanDraft>(draft)
   const [error, setError] = useState<string | null>(null)
 
