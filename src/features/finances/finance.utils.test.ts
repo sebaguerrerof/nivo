@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildFinanceInsights, calculateSafeToSpend, getAdjacentFinanceMonth, getBudgetUsage, getDaysRemainingInMonth, getFinanceMonthBounds } from '@/features/finances/finance.utils'
+import { buildFinanceInsights, calculateSafeToSpend, formatFinanceMonth, getAdjacentFinanceMonth, getBudgetUsage, getDaysRemainingInMonth, getFinanceMonthBounds } from '@/features/finances/finance.utils'
 
 describe('finance utilities', () => {
   it('moves financial months across years without errors', () => {
@@ -7,6 +7,10 @@ describe('finance utilities', () => {
     expect(getAdjacentFinanceMonth({ year: 2026, month: 12 }, 1)).toEqual({ year: 2027, month: 1 })
   })
 
+  it('labels the selected calendar month without shifting it to the previous month', () => {
+    expect(formatFinanceMonth({ year: 2026, month: 9 })).toBe('Septiembre de 2026')
+    expect(formatFinanceMonth({ year: 2026, month: 1 })).toBe('Enero de 2026')
+  })
   it('handles months with 28, 29, 30 and 31 days', () => {
     expect(getFinanceMonthBounds({ year: 2026, month: 2 })).toMatchObject({ endDate: '2026-02-28', daysInMonth: 28 })
     expect(getFinanceMonthBounds({ year: 2028, month: 2 })).toMatchObject({ endDate: '2028-02-29', daysInMonth: 29 })

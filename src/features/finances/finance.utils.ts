@@ -27,7 +27,10 @@ export function getFinanceMonthBounds(period: FinanceMonth) {
 }
 
 export function formatFinanceMonth(period: FinanceMonth) {
-  const value = format(new Date(Date.UTC(period.year, period.month - 1, 1)), "MMMM 'de' yyyy", { locale: es })
+  // Un mes es un período de calendario, no un instante UTC. Construirlo en
+  // hora local evita que el 1 de septiembre UTC se muestre como agosto en
+  // zonas horarias occidentales, como America/Santiago.
+  const value = format(new Date(period.year, period.month - 1, 1), "MMMM 'de' yyyy", { locale: es })
   return value.charAt(0).toLocaleUpperCase('es-CL') + value.slice(1)
 }
 
