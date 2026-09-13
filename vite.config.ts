@@ -48,6 +48,7 @@ export default defineConfig({
           if (id.includes('@ionic') || id.includes('ionicons')) return 'ionic'
           if (id.includes('@supabase')) return 'supabase'
           if (id.includes('lucide-react')) return 'icons'
+          if (id.includes('recharts')) return 'charts'
           if (id.includes('react') || id.includes('scheduler') || id.includes('history')) return 'react'
           return undefined
         },

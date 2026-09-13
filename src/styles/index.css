@@ -13,6 +13,15 @@
   --shadow-card: 0 1px 2px rgb(15 23 42 / 0.03), 0 8px 24px rgb(15 23 42 / 0.035);
   --radius-card: 1rem;
   --transition-base: 180ms ease;
+  --chart-primary: #0f766e;
+  --chart-secondary: #0f766e99;
+  --chart-accent: #d97706;
+  --chart-grid: #e2e8f0;
+  --heatmap-empty: #e8eef2;
+  --heatmap-low: #b7e4dd;
+  --heatmap-medium: #6bc9ba;
+  --heatmap-high: #249a8b;
+  --heatmap-very-high: #0f766e;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--foreground);
   background: var(--background);
@@ -27,6 +36,15 @@
   --foreground-subtle: #788596;
   --border: #263447;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.16), 0 12px 30px rgb(0 0 0 / 0.12);
+  --chart-primary: #2dd4bf;
+  --chart-secondary: #2dd4bf99;
+  --chart-accent: #fbbf24;
+  --chart-grid: #263447;
+  --heatmap-empty: #1b2636;
+  --heatmap-low: #175e58;
+  --heatmap-medium: #147a70;
+  --heatmap-high: #169989;
+  --heatmap-very-high: #2dd4bf;
 }
 
 * {

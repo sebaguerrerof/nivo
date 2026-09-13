@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { AppShell } from '@/components/layout/app-shell'
 import { PageLoader } from '@/components/feedback/page-loader'
@@ -10,6 +11,8 @@ import { ResetPasswordPage } from '@/features/auth/pages/reset-password-page'
 import { DashboardPage } from '@/features/dashboard/dashboard-page'
 import { TodayPage } from '@/features/planning/pages/today-page'
 import { ProfilePage } from '@/features/profile/profile-page'
+
+const ProgressPage = lazy(() => import('@/features/progress/pages/progress-page').then((module) => ({ default: module.ProgressPage })))
 
 function PublicOnlyRoute({ children }: { children: JSX.Element }) {
   const { status } = useAuth()
@@ -32,6 +35,7 @@ function ProtectedRoutes() {
         <Route component={DashboardPage} exact path="/dashboard" />
         <Route component={TodayPage} exact path="/today" />
         <Route component={ProfilePage} exact path="/profile" />
+        <Route exact path="/progress"><Suspense fallback={<PageLoader />}><ProgressPage /></Suspense></Route>
         <Redirect to="/dashboard" />
       </Switch>
     </AppShell>

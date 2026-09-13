@@ -1,0 +1,15 @@
+import { Tags } from 'lucide-react'
+import { Card } from '@/components/ui/card'
+import { getCategoryLabel } from '@/features/progress/progress.utils'
+import type { CategoryStat } from '@/features/progress/progress.types'
+
+export function CategoryProgress({ categories }: { categories: CategoryStat[] }) {
+  return (
+    <Card className="p-5 sm:p-6">
+      <div className="flex items-start gap-3"><div className="grid size-9 place-items-center rounded-xl bg-violet-50 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300"><Tags aria-hidden="true" className="size-4" /></div><div><h2 className="font-bold text-[var(--foreground)]">Por categoría</h2><p className="mt-1 text-sm text-[var(--foreground-muted)]">Dónde estás cumpliendo con más constancia.</p></div></div>
+      <div className="mt-5 grid gap-4">
+        {categories.map((category) => <div key={category.category}><div className="flex justify-between gap-3 text-sm"><span className="font-medium text-[var(--foreground)]">{getCategoryLabel(category.category)}</span><span className="font-semibold text-[var(--foreground-muted)]">{category.percentage}%</span></div><div aria-label={`${getCategoryLabel(category.category)}: ${category.percentage}%`} aria-valuemax={100} aria-valuemin={0} aria-valuenow={category.percentage} className="mt-2 h-2 overflow-hidden rounded-full bg-[var(--surface-muted)]" role="progressbar"><div className="h-full rounded-full bg-[var(--chart-primary)]" style={{ width: `${category.percentage}%` }} /></div><p className="mt-1 text-xs text-[var(--foreground-subtle)]">{category.completed} de {category.planned} actividades</p></div>)}
+      </div>
+    </Card>
+  )
+}
