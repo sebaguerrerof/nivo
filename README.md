@@ -1,4 +1,4 @@
-# Nivo — Fases 1 y 2 + planificación asistida
+# Nivo — Fundación, planificación, progreso y finanzas
 
 Aplicación personal mobile-first construida con Ionic React, TypeScript estricto, Vite, Tailwind CSS, Supabase y Vercel.
 
@@ -12,8 +12,10 @@ Aplicación personal mobile-first construida con Ionic React, TypeScript estrict
 - Planificación asistida: pegar texto o describir el próximo día, revisar un borrador editable y confirmarlo antes de guardarlo.
 - Design system base (botones, inputs, selects, alertas y tarjetas), tema claro/oscuro/sistema y shell PWA.
 - TanStack Query para estado remoto y Zustand limitado a la preferencia local de tema.
+- Gamificación, Daily Score, XP, rachas, logros y progreso con gráficos personales.
+- Finanzas personales: ingresos, gastos, categorías base y personales, presupuesto mensual y por categoría, Safe to Spend y gráficos privados.
 
-No se han implementado todavía gamificación, finanzas, pagos, gráficos ni automatizaciones de IA que modifiquen datos sin confirmación.
+No se han implementado todavía pagos recurrentes, terapia, recordatorios financieros, conexión bancaria ni automatizaciones de IA que modifiquen datos sin confirmación.
 
 ## Inicio local
 
@@ -69,6 +71,8 @@ La migración de Fase 1 crea `public.profiles`, un trigger que inicializa el per
 La Fase 2 crea `daily_plans`, `daily_goals`, `activities` y `daily_reflections`, con RLS por fila y comprobación de propiedad del plan padre en escrituras de entidades hijas. La migración guiada agrega recuperación, responsabilidades, familia, riesgo y estrategia sin alterar dichas políticas.
 
 `supabase/seed.sql` no inserta usuarios: los perfiles solo se generan mediante Auth. Los catálogos de dominio se agregarán en sus fases correspondientes.
+
+La Fase 5 agrega inancial_categories, inancial_transactions, monthly_budgets y category_budgets. Las categorías de sistema son solo de lectura; las personales, transacciones y presupuestos se aíslan mediante RLS. Triggers en SQL validan que ninguna transacción o presupuesto pueda referenciar una categoría o presupuesto de otra persona, aunque se conozca su UUID.
 
 ## Verificación
 

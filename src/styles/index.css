@@ -17,6 +17,10 @@
   --chart-secondary: #0f766e99;
   --chart-accent: #d97706;
   --chart-grid: #e2e8f0;
+  --budget-normal: #0f766e;
+  --budget-attention: #d97706;
+  --budget-high: #ea580c;
+  --budget-exceeded: #e11d48;
   --heatmap-empty: #e8eef2;
   --heatmap-low: #b7e4dd;
   --heatmap-medium: #6bc9ba;
@@ -40,6 +44,10 @@
   --chart-secondary: #2dd4bf99;
   --chart-accent: #fbbf24;
   --chart-grid: #263447;
+  --budget-normal: #2dd4bf;
+  --budget-attention: #fbbf24;
+  --budget-high: #fb923c;
+  --budget-exceeded: #fb7185;
   --heatmap-empty: #1b2636;
   --heatmap-low: #175e58;
   --heatmap-medium: #147a70;

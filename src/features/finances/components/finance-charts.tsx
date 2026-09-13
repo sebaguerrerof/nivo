@@ -1,0 +1,31 @@
+import { BarChart3, PieChart as PieIcon, TrendingUp } from 'lucide-react'
+import { Area, AreaChart, Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Card } from '@/components/ui/card'
+import { formatCurrency } from '@/features/finances/finance.utils'
+import type { FinancialOverview } from '@/features/finances/finance.types'
+import type { Currency } from '@/types/profile'
+
+interface FinanceChartsProps {
+  overview: FinancialOverview
+  currency: Currency
+}
+
+const chartColors = ['var(--chart-primary)', 'var(--chart-accent)', 'var(--budget-attention)', 'var(--budget-high)', 'var(--budget-exceeded)', '#64748b']
+
+function CompactTooltip({ active, payload, currency }: { active?: boolean; payload?: Array<{ value?: number; name?: string; payload?: { categoryName?: string; date?: string } }>; currency: Currency }) {
+  if (!active || !payload?.length) return null
+  return <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs shadow-lg"><p className="font-semibold text-[var(--foreground)]">{payload[0]?.payload?.categoryName ?? payload[0]?.payload?.date ?? payload[0]?.name}</p>{payload.map((item) => <p className="mt-1 text-[var(--foreground-muted)]" key={item.name}>{item.name}: {formatCurrency(Number(item.value ?? 0), currency)}</p>)}</div>
+}
+
+export function FinanceCharts({ overview, currency }: FinanceChartsProps) {
+  const hasExpenses = overview.expenseByCategory.length > 0
+  const hasCumulativeExpenses = overview.cumulativeExpenses.length > 0
+
+  return (
+    <section aria-label="Visualizaciones financieras" className="grid gap-5 lg:grid-cols-2">
+      <Card className="p-5 sm:p-6"><div className="flex items-center gap-2 text-teal-700 dark:text-teal-300"><PieIcon aria-hidden="true" className="size-4" /><p className="text-sm font-semibold">Gastos por categoría</p></div><p className="mt-1 text-sm text-[var(--foreground-muted)]">Solo se muestran categorías con movimientos.</p>{hasExpenses ? <><div aria-label="Gráfico de gastos por categoría" className="mt-3 h-64"><ResponsiveContainer height="100%" width="100%"><PieChart><Pie data={overview.expenseByCategory} dataKey="amount" innerRadius={58} nameKey="categoryName" outerRadius={88} paddingAngle={2}>{overview.expenseByCategory.map((entry, index) => <Cell fill={chartColors[index % chartColors.length]} key={entry.categoryId ?? entry.categoryName} />)}</Pie><Tooltip content={<CompactTooltip currency={currency} />} /></PieChart></ResponsiveContainer></div><ul className="grid gap-2 text-sm">{overview.expenseByCategory.map((item, index) => <li className="flex items-center justify-between gap-3" key={item.categoryId ?? item.categoryName}><span className="flex min-w-0 items-center gap-2 text-[var(--foreground-muted)]"><i aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: chartColors[index % chartColors.length] }} /> <span className="truncate">{item.categoryName}</span></span><span className="font-semibold text-[var(--foreground)]">{formatCurrency(item.amount, currency)}</span></li>)}</ul></> : <div className="mt-5 grid min-h-52 place-items-center rounded-2xl bg-[var(--surface-muted)] px-5 text-center text-sm text-[var(--foreground-muted)]">Registra gastos para ver su distribución por categoría.</div>}</Card>
+      <Card className="p-5 sm:p-6"><div className="flex items-center gap-2 text-teal-700 dark:text-teal-300"><TrendingUp aria-hidden="true" className="size-4" /><p className="text-sm font-semibold">Gasto acumulado</p></div><p className="mt-1 text-sm text-[var(--foreground-muted)]">Cómo ha crecido tu gasto durante el mes.</p>{hasCumulativeExpenses ? <div aria-label="Gráfico de gasto acumulado del mes" className="mt-5 h-64"><ResponsiveContainer height="100%" width="100%"><AreaChart data={overview.cumulativeExpenses} margin={{ left: -18, right: 8 }}><defs><linearGradient id="financeExpenseFill" x1="0" x2="0" y1="0" y2="1"><stop offset="5%" stopColor="var(--chart-primary)" stopOpacity={0.28} /><stop offset="95%" stopColor="var(--chart-primary)" stopOpacity={0} /></linearGradient></defs><XAxis dataKey="date" fontSize={11} stroke="var(--foreground-subtle)" tickFormatter={(value) => value.slice(-2)} tickLine={false} /><YAxis fontSize={11} stroke="var(--foreground-subtle)" tickFormatter={(value) => `$${Math.round(Number(value) / 1000)}k`} tickLine={false} width={44} /><Tooltip content={<CompactTooltip currency={currency} />} /><Area dataKey="cumulativeAmount" name="Acumulado" fill="url(#financeExpenseFill)" stroke="var(--chart-primary)" strokeWidth={2.5} type="monotone" /></AreaChart></ResponsiveContainer></div> : <div className="mt-5 grid min-h-52 place-items-center rounded-2xl bg-[var(--surface-muted)] px-5 text-center text-sm text-[var(--foreground-muted)]">Aún no hay gastos para graficar este mes.</div>}</Card>
+      <Card className="p-5 sm:p-6 lg:col-span-2"><div className="flex items-center gap-2 text-teal-700 dark:text-teal-300"><BarChart3 aria-hidden="true" className="size-4" /><p className="text-sm font-semibold">Ingresos vs gastos</p></div><p className="mt-1 text-sm text-[var(--foreground-muted)]">Comparación simple del mes seleccionado.</p><div aria-label={`Ingresos ${formatCurrency(overview.incomeTotal, currency)} y gastos ${formatCurrency(overview.expenseTotal, currency)}`} className="mt-5 h-56"><ResponsiveContainer height="100%" width="100%"><BarChart data={[{ name: 'Mes seleccionado', Ingresos: overview.incomeTotal, Gastos: overview.expenseTotal }]} barGap={8} margin={{ left: -12, right: 8 }}><XAxis dataKey="name" fontSize={12} stroke="var(--foreground-subtle)" tickLine={false} /><YAxis fontSize={11} stroke="var(--foreground-subtle)" tickFormatter={(value) => `$${Math.round(Number(value) / 1000)}k`} tickLine={false} width={44} /><Tooltip content={<CompactTooltip currency={currency} />} /><Legend wrapperStyle={{ fontSize: 12 }} /><Bar dataKey="Ingresos" fill="var(--chart-primary)" radius={[6, 6, 0, 0]} /><Bar dataKey="Gastos" fill="var(--chart-accent)" radius={[6, 6, 0, 0]} /></BarChart></ResponsiveContainer></div><p className="sr-only">Ingresos: {formatCurrency(overview.incomeTotal, currency)}. Gastos: {formatCurrency(overview.expenseTotal, currency)}.</p></Card>
+    </section>
+  )
+}
