@@ -51,6 +51,7 @@ export function usePaymentActions(userId: string) {
     create: useMutation({ mutationFn: (input: RecurringPaymentInput) => paymentService.createRecurringPayment(input), onSuccess: refresh }),
     update: useMutation({ mutationFn: ({ paymentId, input }: { paymentId: string; input: RecurringPaymentInput }) => paymentService.updateRecurringPayment(paymentId, input), onSuccess: refresh }),
     setActive: useMutation({ mutationFn: ({ paymentId, active }: { paymentId: string; active: boolean }) => paymentService.setRecurringPaymentActive(paymentId, active), onSuccess: refresh }),
+    remove: useMutation({ mutationFn: (paymentId: string) => paymentService.deleteRecurringPayment(paymentId), onSuccess: refresh }),
     markPaid: useMutation({ mutationFn: ({ occurrenceId, input }: { occurrenceId: string; input: MarkPaymentOccurrenceInput }) => paymentService.markOccurrencePaid(occurrenceId, input), onSuccess: refresh }),
     undo: useMutation({ mutationFn: (occurrenceId: string) => paymentService.undoOccurrence(occurrenceId), onSuccess: refresh }),
   }

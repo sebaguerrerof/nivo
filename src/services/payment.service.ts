@@ -128,6 +128,11 @@ export const paymentService = {
     return toRecurringPayment(data)
   },
 
+  async deleteRecurringPayment(paymentId: string) {
+    const { error } = await getSupabaseClient().rpc('delete_recurring_payment', { p_payment_id: paymentId })
+    if (error) throw error
+  },
+
   async markOccurrencePaid(occurrenceId: string, input: MarkPaymentOccurrenceInput): Promise<PaymentOccurrence> {
     const { data, error } = await getSupabaseClient().rpc('mark_payment_occurrence_paid', {
       p_occurrence_id: occurrenceId, p_amount: input.amount, p_paid_date: input.paidDate,

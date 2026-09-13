@@ -21,6 +21,12 @@ describe('payment service mutations', () => {
     expect(result.amount).toBe(35_000)
   })
 
+  it('deletes an unused recurring payment only through its controlled RPC', async () => {
+    mocks.rpc.mockResolvedValue({ error: null })
+    await paymentService.deleteRecurringPayment(paymentId)
+    expect(mocks.rpc).toHaveBeenCalledWith('delete_recurring_payment', { p_payment_id: paymentId })
+  })
+
   it('marks an occurrence as paid exclusively through the atomic RPC', async () => {
     const single = vi.fn().mockResolvedValue({ data: { id: occurrenceId, user_id: recurringRow.user_id, recurring_payment_id: paymentId, due_date: '2026-09-15', amount: '35000.00', status: 'paid', paid_at: '2026-09-15T12:00:00Z', payment_method: 'Débito', notes: null, transaction_id: '8e70a07c-501a-4ec0-b010-b35f24426233', created_at: '', updated_at: '', recurring_payment: recurringRow }, error: null })
     mocks.rpc.mockReturnValue({ single })

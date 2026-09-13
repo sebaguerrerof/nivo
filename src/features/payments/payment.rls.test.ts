@@ -6,6 +6,8 @@ const migrationPath = fileURLToPath(new URL('../../../supabase/migrations/202609
 const migration = readFileSync(migrationPath, 'utf8')
 const undoMigrationPath = fileURLToPath(new URL('../../../supabase/migrations/20260913000700_keep_undo_payment_schedule_consistent.sql', import.meta.url))
 const undoMigration = readFileSync(undoMigrationPath, 'utf8')
+const deletionMigrationPath = fileURLToPath(new URL('../../../supabase/migrations/20260913000800_add_safe_recurring_payment_deletion.sql', import.meta.url))
+const deletionMigration = readFileSync(deletionMigrationPath, 'utf8')
 
 describe('recurring payment migration security', () => {
   it('enables RLS and scopes all private tables to auth.uid()', () => {
@@ -44,5 +46,13 @@ describe('recurring payment migration security', () => {
     expect(undoMigration).toContain('delete from public.payment_occurrences')
     expect(undoMigration).toContain('and transaction_id is null')
     expect(undoMigration).toContain('set next_due_date = occurrence_row.due_date')
+  })
+
+  it('deletes only unused payments and requires auth.uid() server-side', () => {
+    expect(deletionMigration).toContain('actor_id uuid := auth.uid();')
+    expect(deletionMigration).toContain('paid_at is not null or transaction_id is not null')
+    expect(deletionMigration).toContain('Payments with financial history must be archived instead of deleted')
+    expect(deletionMigration).toContain('delete from public.recurring_payments')
+    expect(deletionMigration).toContain('grant execute on function public.delete_recurring_payment(uuid) to authenticated;')
   })
 })
