@@ -65,14 +65,12 @@ export function PaymentsPage() {
   }
 
   const deletePayment = async (payment: RecurringPayment) => {
-    if (!window.confirm(`¿Eliminar “${payment.name}”? Solo se puede eliminar si todavía no tiene pagos registrados.`)) return
+    if (!window.confirm(`¿Eliminar “${payment.name}” y sus registros asociados? Se borrarán sus ocurrencias y los gastos automáticos creados por Nivo. Esta acción no se puede deshacer.`)) return
     try {
       await actions.remove.mutateAsync(payment.id)
     } catch (error) {
-      const message = error instanceof Error ? error.message : ''
-      window.alert(message.includes('financial history')
-        ? 'Este pago ya tiene historial financiero. Puedes pausarlo para conservar tus registros.'
-        : 'No pudimos eliminar este pago. Intenta nuevamente.')
+      const message = typeof error === 'object' && error !== null && 'message' in error ? String(error.message) : ''
+      window.alert(message || 'No pudimos eliminar este pago. Intenta nuevamente.')
     }
   }
 
