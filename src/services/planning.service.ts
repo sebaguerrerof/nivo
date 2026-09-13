@@ -20,6 +20,18 @@ function toPlanPayload(input: DailyPlanInput) {
   }
 }
 
+function isEmptyDailyPlan(plan: DailyPlan) {
+  return !plan.closed_at
+    && !plan.wake_up_time
+    && !plan.recovery_activity
+    && !plan.responsibilities
+    && !plan.family_connection
+    && !plan.main_risk
+    && !plan.risk_strategy
+    && !plan.daily_commitment
+    && !plan.notes
+}
+
 export const planningService = {
   async getDailyPlan(userId: string, date: string): Promise<DailyPlan | null> {
     const { data, error } = await getSupabaseClient().from('daily_plans').select(planColumns).eq('user_id', userId).eq('date', date).maybeSingle()
@@ -104,6 +116,13 @@ export const planningService = {
 
     if (error) throw error
     return data as DailyPlan
+  },
+  async saveDailyPlanWithContent(userId: string, input: DailyPlanDraftInput): Promise<DailyPlan> {
+    const existingPlan = await this.getDailyPlan(userId, input.plan.date)
+    if (!existingPlan) return this.createDailyPlanWithContent(input)
+    if (isEmptyDailyPlan(existingPlan)) return this.fillEmptyDailyPlanWithContent(existingPlan.id, input)
+
+    throw new Error('Ya existe un plan con contenido para esta fecha.')
   },
   async updateDailyPlan(userId: string, planId: string, input: DailyPlanInput): Promise<DailyPlan> {
     const { data, error } = await getSupabaseClient()

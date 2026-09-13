@@ -38,7 +38,7 @@ export function useCreateDailyPlan(scope: PlanningScope) {
 export function useCreateDailyPlanWithContent(scope: PlanningScope) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (input: DailyPlanDraftInput) => planningService.createDailyPlanWithContent(input),
+    mutationFn: (input: DailyPlanDraftInput) => planningService.saveDailyPlanWithContent(scope.userId, input),
     onSuccess: (_plan, input) => Promise.all([queryClient.invalidateQueries({ queryKey: dailyPlanKeys.byDate(scope.userId, input.plan.date) }), invalidateGamification(queryClient, scope.userId, input.plan.date)]),
   })
 }
