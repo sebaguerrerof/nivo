@@ -10,6 +10,8 @@ const deletionMigrationPath = fileURLToPath(new URL('../../../supabase/migration
 const deletionMigration = readFileSync(deletionMigrationPath, 'utf8')
 const purgeMigrationPath = fileURLToPath(new URL('../../../supabase/migrations/20260913000900_allow_controlled_recurring_payment_purge.sql', import.meta.url))
 const purgeMigration = readFileSync(purgeMigrationPath, 'utf8')
+const purgeFixMigrationPath = fileURLToPath(new URL('../../../supabase/migrations/20260913001000_fix_recurring_payment_purge_paid_occurrences.sql', import.meta.url))
+const purgeFixMigration = readFileSync(purgeFixMigrationPath, 'utf8')
 
 describe('recurring payment migration security', () => {
   it('enables RLS and scopes all private tables to auth.uid()', () => {
@@ -62,5 +64,15 @@ describe('recurring payment migration security', () => {
     expect(purgeMigration).toContain('set transaction_id = null')
     expect(purgeMigration).toContain('id = any(linked_transaction_ids)')
     expect(purgeMigration).toContain('delete from public.recurring_payments')
+  })
+
+  it('removes occurrence rows before their linked expenses to preserve the paid-state constraint', () => {
+    expect(purgeFixMigration).toContain('actor_id uuid := auth.uid();')
+    expect(purgeFixMigration).toContain('delete from public.payment_occurrences')
+    expect(purgeFixMigration).toContain('delete from public.financial_transactions')
+    expect(purgeFixMigration.indexOf('delete from public.payment_occurrences')).toBeLessThan(
+      purgeFixMigration.indexOf('delete from public.financial_transactions'),
+    )
+    expect(purgeFixMigration).toContain('delete from public.recurring_payments')
   })
 })
