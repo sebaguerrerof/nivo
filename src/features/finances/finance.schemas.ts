@@ -54,6 +54,8 @@ export const financeOverviewSchema = z.object({
   incomeTotal: monetaryValue,
   expenseTotal: monetaryValue,
   balance: monetaryValue,
+  committedPending: monetaryValue,
+  availableReal: monetaryValue,
   budget: z.object({
     id: z.string().uuid(),
     amount: monetaryValue,

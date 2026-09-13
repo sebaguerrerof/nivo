@@ -21,12 +21,12 @@ describe('finance utilities', () => {
   it('calculates remaining days inclusively and never divides by zero', () => {
     const now = new Date('2026-09-30T15:00:00Z')
     expect(getDaysRemainingInMonth({ year: 2026, month: 9 }, 'America/Santiago', now)).toBe(1)
-    expect(calculateSafeToSpend(100_000, 20_000, 10_000, 1)).toEqual({ available: 70_000, dailyAvailable: 70_000, daysRemaining: 1 })
-    expect(calculateSafeToSpend(100_000, 20_000, 10_000, 0)).toEqual({ available: 70_000, dailyAvailable: null, daysRemaining: 0 })
+    expect(calculateSafeToSpend(100_000, 20_000, 5_000, 10_000, 1)).toEqual({ available: 65_000, dailyAvailable: 65_000, daysRemaining: 1, committedPending: 5_000, registeredBalance: 80_000, availableBeforeSavings: 75_000 })
+    expect(calculateSafeToSpend(100_000, 20_000, 5_000, 10_000, 0)).toEqual({ available: 65_000, dailyAvailable: null, daysRemaining: 0, committedPending: 5_000, registeredBalance: 80_000, availableBeforeSavings: 75_000 })
   })
 
   it('keeps negative available money visible and classifies budget thresholds', () => {
-    expect(calculateSafeToSpend(50_000, 80_000, 10_000, 10)).toMatchObject({ available: -40_000, dailyAvailable: -4_000 })
+    expect(calculateSafeToSpend(50_000, 80_000, 5_000, 10_000, 10)).toMatchObject({ available: -45_000, dailyAvailable: -4_500 })
     expect(getBudgetUsage(69, 100)?.state).toBe('normal')
     expect(getBudgetUsage(70, 100)?.state).toBe('attention')
     expect(getBudgetUsage(90, 100)?.state).toBe('high')
@@ -35,7 +35,7 @@ describe('finance utilities', () => {
   })
 
   it('creates deterministic financial insights without an AI dependency', () => {
-    expect(buildFinanceInsights({ incomeTotal: 100, expenseTotal: 80, balance: 20, budget: { id: 'a', amount: 100, savings_target: 0 }, expenseByCategory: [{ categoryId: 'b', categoryName: 'Alimentación', icon: null, amount: 80 }], cumulativeExpenses: [], categoryBudgets: [] })).toEqual([
+    expect(buildFinanceInsights({ incomeTotal: 100, expenseTotal: 80, balance: 20, committedPending: 0, availableReal: 20, budget: { id: 'a', amount: 100, savings_target: 0 }, expenseByCategory: [{ categoryId: 'b', categoryName: 'Alimentación', icon: null, amount: 80 }], cumulativeExpenses: [], categoryBudgets: [] })).toEqual([
       'Has utilizado 80% de tu presupuesto mensual.',
       'Alimentación es tu categoría de mayor gasto este mes.',
     ])

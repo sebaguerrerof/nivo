@@ -8,7 +8,7 @@ export const sidebarNavigation: NavigationItem[] = [
   { label: 'Hábitos', icon: Target, available: false },
   { label: 'Progreso', href: '/progress', icon: BarChart3, available: true },
   { label: 'Finanzas', href: '/finances', icon: WalletCards, available: true },
-  { label: 'Pagos', icon: CircleDollarSign, available: false },
+  { label: 'Pagos', href: '/payments', icon: CircleDollarSign, available: true },
   { label: 'Configuración', href: '/profile', icon: Settings2, available: true },
 ]
 

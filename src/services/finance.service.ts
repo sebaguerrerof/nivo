@@ -172,7 +172,13 @@ export const financeService = {
     const daysRemaining = getDaysRemainingInMonth(period, timezone)
     return {
       ...overview,
-      safeToSpend: calculateSafeToSpend(overview.incomeTotal, overview.expenseTotal, overview.budget?.savings_target ?? 0, daysRemaining),
+      safeToSpend: calculateSafeToSpend(
+        overview.incomeTotal,
+        overview.expenseTotal,
+        overview.committedPending,
+        overview.budget?.savings_target ?? 0,
+        daysRemaining,
+      ),
     }
   },
 }

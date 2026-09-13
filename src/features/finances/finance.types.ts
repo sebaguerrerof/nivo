@@ -109,6 +109,8 @@ export interface FinancialMonthOverview {
   incomeTotal: number
   expenseTotal: number
   balance: number
+  committedPending: number
+  availableReal: number
   budget: Pick<MonthlyBudget, 'id' | 'amount' | 'savings_target'> | null
   expenseByCategory: ExpenseByCategory[]
   cumulativeExpenses: CumulativeExpensePoint[]
@@ -119,6 +121,9 @@ export interface SafeToSpendEstimate {
   available: number
   dailyAvailable: number | null
   daysRemaining: number
+  committedPending: number
+  registeredBalance: number
+  availableBeforeSavings: number
 }
 
 export interface FinancialOverview extends FinancialMonthOverview {

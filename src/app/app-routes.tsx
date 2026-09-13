@@ -14,6 +14,7 @@ import { ProfilePage } from '@/features/profile/profile-page'
 
 const ProgressPage = lazy(() => import('@/features/progress/pages/progress-page').then((module) => ({ default: module.ProgressPage })))
 const FinancePage = lazy(() => import('@/features/finances/pages/finance-page').then((module) => ({ default: module.FinancePage })))
+const PaymentsPage = lazy(() => import('@/features/payments/pages/payments-page').then((module) => ({ default: module.PaymentsPage })))
 
 function PublicOnlyRoute({ children }: { children: JSX.Element }) {
   const { status } = useAuth()
@@ -38,6 +39,7 @@ function ProtectedRoutes() {
         <Route component={ProfilePage} exact path="/profile" />
         <Route exact path="/progress"><Suspense fallback={<PageLoader />}><ProgressPage /></Suspense></Route>
         <Route exact path="/finances"><Suspense fallback={<PageLoader />}><FinancePage /></Suspense></Route>
+        <Route exact path="/payments"><Suspense fallback={<PageLoader />}><PaymentsPage /></Suspense></Route>
         <Redirect to="/dashboard" />
       </Switch>
     </AppShell>

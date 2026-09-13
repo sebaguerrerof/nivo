@@ -1,5 +1,6 @@
 import { IonContent, IonPage } from '@ionic/react'
 import { CalendarDays, CheckCircle2, ChevronRight, Sparkles, Target } from 'lucide-react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { useAuth } from '@/features/auth/auth-context'
@@ -7,6 +8,11 @@ import { getGreeting, getLongDate } from '@/features/dashboard/dashboard.utils'
 import { DailyScoreCard } from '@/features/gamification/components/daily-score-card'
 import { GamificationOverview } from '@/features/gamification/components/gamification-overview'
 import { useGamificationSummary } from '@/features/gamification/hooks/use-gamification'
+import { MarkPaymentSheet } from '@/features/payments/components/mark-payment-sheet'
+import { TherapyPaymentCard } from '@/features/payments/components/therapy-payment-card'
+import { UpcomingPaymentsCard } from '@/features/payments/components/upcoming-payments-card'
+import { usePaymentActions, useUpcomingPayments } from '@/features/payments/hooks/use-payments'
+import type { PaymentOccurrence } from '@/features/payments/payment.types'
 import { ProgressCard } from '@/features/planning/components/progress-card'
 import { DEFAULT_TIMEZONE } from '@/features/planning/planning.constants'
 import { useDailyPlan } from '@/features/planning/hooks/use-daily-plan'
@@ -25,6 +31,10 @@ export function DashboardPage() {
   const tomorrow = getNextCalendarDate(today)
   const { data: planBundle, isLoading: isLoadingPlan } = useDailyPlan({ userId: user?.id ?? '', date: today })
   const gamification = useGamificationSummary(user?.id, today)
+  const upcomingPayments = useUpcomingPayments(user?.id, timezone, 3)
+  const currency = profile?.currency || 'CLP'
+  const [markingPayment, setMarkingPayment] = useState<PaymentOccurrence | null>(null)
+  const paymentActions = usePaymentActions(user?.id ?? '')
 
   return (
     <IonPage>
@@ -51,6 +61,7 @@ export function DashboardPage() {
             {isLoadingPlan ? <Card className="h-48 animate-pulse bg-[var(--surface-muted)]" /> : null}
             {gamification.isLoading ? <Card className="mb-5 h-48 animate-pulse bg-[var(--surface-muted)]" /> : null}
             {gamification.data ? <section className="mb-5 grid gap-5 lg:grid-cols-2"><DailyScoreCard score={planBundle?.plan.daily_score ?? 0} /><GamificationOverview summary={gamification.data} /></section> : null}
+            {upcomingPayments.data ? <section className="mb-5 grid gap-5 lg:grid-cols-2"><TherapyPaymentCard currency={currency} onMarkPaid={setMarkingPayment} payments={upcomingPayments.data} timezone={timezone} /><UpcomingPaymentsCard currency={currency} payments={upcomingPayments.data} timezone={timezone} /></section> : null}
 
             {!isLoadingPlan && !planBundle ? (
               <div className="animate-rise-in">
@@ -111,6 +122,7 @@ export function DashboardPage() {
             ) : null}
           </div>
         </main>
+        <MarkPaymentSheet occurrence={markingPayment} onClose={() => setMarkingPayment(null)} onSave={(input) => paymentActions.markPaid.mutateAsync({ occurrenceId: markingPayment?.id ?? '', input })} saving={paymentActions.markPaid.isPending} timezone={timezone} />
       </IonContent>
     </IonPage>
   )

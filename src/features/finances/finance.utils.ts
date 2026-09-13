@@ -53,14 +53,20 @@ export function getDaysRemainingInMonth(period: FinanceMonth, timezone: string, 
 export function calculateSafeToSpend(
   incomeTotal: number,
   expenseTotal: number,
+  committedPending: number,
   savingsTarget: number,
   daysRemaining: number,
 ): SafeToSpendEstimate {
-  const available = incomeTotal - expenseTotal - savingsTarget
+  const registeredBalance = incomeTotal - expenseTotal
+  const availableBeforeSavings = registeredBalance - committedPending
+  const available = availableBeforeSavings - savingsTarget
   return {
     available,
     dailyAvailable: daysRemaining > 0 ? available / daysRemaining : null,
     daysRemaining,
+    committedPending,
+    registeredBalance,
+    availableBeforeSavings,
   }
 }
 
