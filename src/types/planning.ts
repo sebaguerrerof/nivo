@@ -48,6 +48,7 @@ export interface Activity {
   priority: ActivityPriority
   status: ActivityStatus
   completed_at: string | null
+  not_completed_reason: string | null
   created_at: string
   updated_at: string
 }
@@ -95,6 +96,11 @@ export interface ActivityInput {
   endAt?: string | null
   priority: ActivityPriority
   status?: ActivityStatus
+}
+
+export interface ActivityOutcomeInput {
+  status: 'completed' | 'skipped'
+  notCompletedReason?: string | null
 }
 
 export interface DailyPlanDraftInput {

@@ -16,6 +16,7 @@ function activity(overrides: Partial<Activity> = {}): Activity {
     priority: 'normal',
     status: 'pending',
     completed_at: null,
+    not_completed_reason: null,
     created_at: '2026-09-12T12:00:00.000Z',
     updated_at: '2026-09-12T12:00:00.000Z',
     ...overrides,

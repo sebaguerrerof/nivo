@@ -1,7 +1,7 @@
 import { getSupabaseClient } from '@/lib/supabase/client'
-import type { Activity, ActivityInput, ActivityStatus } from '@/types/planning'
+import type { Activity, ActivityInput, ActivityOutcomeInput, ActivityStatus } from '@/types/planning'
 
-const activityColumns = 'id, user_id, daily_plan_id, title, description, category, start_at, end_at, priority, status, completed_at, created_at, updated_at'
+const activityColumns = 'id, user_id, daily_plan_id, title, description, category, start_at, end_at, priority, status, completed_at, not_completed_reason, created_at, updated_at'
 
 export const activityService = {
   async getActivities(planId: string): Promise<Activity[]> {
@@ -70,7 +70,38 @@ export const activityService = {
 
     const { data, error } = await getSupabaseClient()
       .from('activities')
-      .update({ status, completed_at: completedAt })
+      .update({ status, completed_at: completedAt, ...(status === 'completed' ? { not_completed_reason: null } : {}) })
+      .eq('id', activityId)
+      .eq('user_id', userId)
+      .select(activityColumns)
+      .single()
+
+    if (error) throw error
+    return data as Activity
+  },
+
+  async setActivityOutcome(userId: string, activityId: string, input: ActivityOutcomeInput): Promise<Activity> {
+    const isCompleted = input.status === 'completed'
+    const { data, error } = await getSupabaseClient()
+      .from('activities')
+      .update({
+        status: input.status,
+        completed_at: isCompleted ? new Date().toISOString() : null,
+        not_completed_reason: isCompleted ? null : input.notCompletedReason?.trim() || null,
+      })
+      .eq('id', activityId)
+      .eq('user_id', userId)
+      .select(activityColumns)
+      .single()
+
+    if (error) throw error
+    return data as Activity
+  },
+
+  async resetActivityOutcome(userId: string, activityId: string): Promise<Activity> {
+    const { data, error } = await getSupabaseClient()
+      .from('activities')
+      .update({ status: 'pending', completed_at: null, not_completed_reason: null })
       .eq('id', activityId)
       .eq('user_id', userId)
       .select(activityColumns)

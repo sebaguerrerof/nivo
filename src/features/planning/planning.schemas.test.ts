@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { activitySchema, dailyGoalSchema, dailyPlanSchema, reflectionSchema } from '@/features/planning/planning.schemas'
+import { activityOutcomeSchema, activitySchema, dailyGoalSchema, dailyPlanSchema, reflectionSchema } from '@/features/planning/planning.schemas'
 
 describe('planning schemas', () => {
   it('accepts an intentionally minimal daily plan', () => {
@@ -15,6 +15,11 @@ describe('planning schemas', () => {
     expect(
       activitySchema.safeParse({ title: 'Leer', description: '', category: 'reading', startTime: '10:00', endTime: '09:30', priority: 'normal', status: 'pending' }).success,
     ).toBe(false)
+  })
+
+  it('requires a brief reason when an activity is not completed', () => {
+    expect(activityOutcomeSchema.safeParse({ reason: '   ' }).success).toBe(false)
+    expect(activityOutcomeSchema.safeParse({ reason: 'Me surgió una urgencia familiar.' }).success).toBe(true)
   })
 
   it('keeps the mood score in the expected range', () => {

@@ -44,6 +44,10 @@ export const activitySchema = z
     { message: 'La hora de término debe ser posterior al inicio.', path: ['endTime'] },
   )
 
+export const activityOutcomeSchema = z.object({
+  reason: z.string().trim().min(1, 'Cuéntanos brevemente por qué no se realizó.').max(500, 'Máximo 500 caracteres.'),
+})
+
 export const reflectionSchema = z.object({
   whatWentWell: optionalText(1_000),
   whatToImprove: optionalText(1_000),

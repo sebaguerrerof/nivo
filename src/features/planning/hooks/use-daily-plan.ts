@@ -114,7 +114,7 @@ export function useActivityActions(scope: PlanningScope) {
               ...bundle,
               activities: bundle.activities.map((item) =>
                 item.id === activity.id
-                  ? { ...item, status: getToggledActivityStatus(item.status), updated_at: new Date().toISOString() }
+                  ? { ...item, status: getToggledActivityStatus(item.status), not_completed_reason: null, updated_at: new Date().toISOString() }
                   : item,
               ),
             }
@@ -125,11 +125,14 @@ export function useActivityActions(scope: PlanningScope) {
     onError: (_error, _activity, context) => queryClient.setQueryData(key, context?.previous),
     onSettled: refresh,
   })
+  const complete = useMutation({ mutationFn: (activity: Activity) => activityService.setActivityOutcome(scope.userId, activity.id, { status: 'completed' }), onSuccess: refresh })
+  const skip = useMutation({ mutationFn: ({ activity, reason }: { activity: Activity; reason: string }) => activityService.setActivityOutcome(scope.userId, activity.id, { status: 'skipped', notCompletedReason: reason }), onSuccess: refresh })
+  const resetOutcome = useMutation({ mutationFn: (activity: Activity) => activityService.resetActivityOutcome(scope.userId, activity.id), onSuccess: refresh })
   const update = useMutation({ mutationFn: ({ activityId, input }: { activityId: string; input: Partial<ActivityInput> }) => activityService.updateActivity(scope.userId, activityId, input), onSuccess: refresh })
   const remove = useMutation({ mutationFn: (activityId: string) => activityService.deleteActivity(scope.userId, activityId), onSuccess: refresh })
   const reschedule = useMutation({ mutationFn: ({ activityId, startAt, endAt }: { activityId: string; startAt: string | null; endAt: string | null }) => activityService.rescheduleActivity(scope.userId, activityId, startAt, endAt), onSuccess: refresh })
 
-  return { toggle, update, remove, reschedule }
+  return { toggle, complete, skip, resetOutcome, update, remove, reschedule }
 }
 
 export function useCloseDay(scope: PlanningScope) {
