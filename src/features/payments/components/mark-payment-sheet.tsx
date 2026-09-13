@@ -23,7 +23,9 @@ export function MarkPaymentSheet({ occurrence, timezone, saving, onClose, onSave
 
   useEffect(() => {
     if (!occurrence) return
-    form.reset({ amount: occurrence.amount, paidDate: getTodayInTimeZone(timezone), paymentMethod: '', notes: '' })
+    // Al revisar un mes histórico, la fecha conserva el contexto de la
+    // ocurrencia y evita registrar un gasto de agosto en el mes actual.
+    form.reset({ amount: occurrence.amount, paidDate: occurrence.due_date || getTodayInTimeZone(timezone), paymentMethod: '', notes: '' })
     setSubmitError(null)
   }, [form, occurrence, timezone])
 
