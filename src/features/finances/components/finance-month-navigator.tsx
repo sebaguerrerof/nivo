@@ -10,14 +10,10 @@ interface FinanceMonthNavigatorProps {
 
 export function FinanceMonthNavigator({ value, onChange }: FinanceMonthNavigatorProps) {
   return (
-    <div aria-label="Seleccionar mes financiero" className="inline-flex min-h-11 items-center rounded-xl border border-[var(--border)] bg-[var(--surface)] p-1 shadow-sm">
-      <Button aria-label="Mes anterior" onClick={() => onChange(getAdjacentFinanceMonth(value, -1))} size="icon" type="button" variant="ghost">
-        <ChevronLeft aria-hidden="true" className="size-4" />
-      </Button>
-      <p aria-live="polite" className="min-w-44 px-2 text-center text-sm font-semibold text-[var(--foreground)]">{formatFinanceMonth(value)}</p>
-      <Button aria-label="Mes siguiente" onClick={() => onChange(getAdjacentFinanceMonth(value, 1))} size="icon" type="button" variant="ghost">
-        <ChevronRight aria-hidden="true" className="size-4" />
-      </Button>
+    <div aria-label="Seleccionar mes financiero" className="inline-flex min-h-10 items-center rounded-[var(--radius-button)] border border-[var(--border-subtle)] bg-[var(--surface)] p-1 shadow-sm">
+      <Button aria-label="Mes anterior" className="min-h-8 min-w-8 rounded-[0.75rem] px-0" onClick={() => onChange(getAdjacentFinanceMonth(value, -1))} size="sm" type="button" variant="ghost"><ChevronLeft aria-hidden="true" className="size-4" /></Button>
+      <p aria-live="polite" className="min-w-36 px-2 text-center text-sm font-semibold text-[var(--foreground)] sm:min-w-44">{formatFinanceMonth(value)}</p>
+      <Button aria-label="Mes siguiente" className="min-h-8 min-w-8 rounded-[0.75rem] px-0" onClick={() => onChange(getAdjacentFinanceMonth(value, 1))} size="sm" type="button" variant="ghost"><ChevronRight aria-hidden="true" className="size-4" /></Button>
     </div>
   )
 }
