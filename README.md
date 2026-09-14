@@ -1,80 +1,80 @@
-# Nivo — Fundación, planificación, progreso y finanzas
+# Nivo
 
-Aplicación personal mobile-first construida con Ionic React, TypeScript estricto, Vite, Tailwind CSS, Supabase y Vercel.
+Nivo es una PWA personal, mobile-first, para organizar el día, seguir el progreso y mantener las finanzas bajo control sin sobrecargar la experiencia.
 
-## Alcance actual
+## Funcionalidades actuales
 
-- Registro, inicio/cierre de sesión y recuperación de contraseña con Supabase Auth.
-- Sesión persistente y rutas protegidas.
-- Perfil privado: nombre, apellido, moneda, zona horaria y apariencia.
-- Dashboard con resumen del día y acceso a la planificación diaria.
-- Planificación privada: plan, hasta tres objetivos, actividades, timeline, progreso derivado y cierre del día.
-- Planificación asistida: pegar texto o describir el próximo día, revisar un borrador editable y confirmarlo antes de guardarlo.
-- Design system base (botones, inputs, selects, alertas y tarjetas), tema claro/oscuro/sistema y shell PWA.
-- TanStack Query para estado remoto y Zustand limitado a la preferencia local de tema.
-- Gamificación, Daily Score, XP, rachas, logros y progreso con gráficos personales.
-- Finanzas personales: ingresos, gastos, categorías base y personales, presupuesto mensual y por categoría, Safe to Spend y gráficos privados.
+- Autenticación con Supabase: registro, login, recuperación y cambio de contraseña.
+- Onboarding breve para cuentas nuevas, con preferencias, intereses y accesos al primer plan o presupuesto.
+- Planificación diaria, objetivos, actividades, resultados, cierre del día y reportes editables para WhatsApp.
+- Planificación asistida mediante IA: la persona revisa y confirma siempre antes de guardar.
+- XP, niveles, rachas, logros, puntaje del día y progreso personal.
+- Ingresos, gastos, categorías, presupuestos, disponible para gastar y gráficos.
+- Pagos recurrentes, terapia, historial y creación automática de gastos al marcar un pago.
+- Notificaciones internas discretas, navegación móvil con acciones rápidas, temas claro/oscuro, PWA, modo sin conexión y aviso de actualización.
+- Exportación JSON de datos propios y eliminación deliberada de la propia cuenta.
 
-No se han implementado todavía pagos recurrentes, terapia, recordatorios financieros, conexión bancaria ni automatizaciones de IA que modifiquen datos sin confirmación.
+## Stack
 
-## Inicio local
+Ionic React, TypeScript estricto, Vite, Tailwind CSS, TanStack Query, Zustand (solo tema), Supabase, Vercel, Zod, Framer Motion, Lucide y Recharts.
 
-1. Instala dependencias:
+## Ejecutar localmente
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+Copy-Item .env.example .env.local
+npx supabase db push --linked
+npm run dev
+```
 
-2. Copia `.env.example` a `.env.local` y completa los valores de tu proyecto Supabase. Para probar la planificación asistida en local, agrega también tus variables de OpenAI solo en ese archivo local.
-
-3. Aplica las migraciones versionadas. Con Supabase CLI enlazado al proyecto:
-
-   ```bash
-   supabase db push
-   ```
-
-   Las migraciones versionadas son la fuente de verdad; no apliques cambios manuales que queden fuera de Git.
-
-4. En Supabase Auth configura:
-
-   - `Site URL`: `http://localhost:5173` para desarrollo.
-   - Redirect URLs: `http://localhost:5173/auth/callback` y `http://localhost:5173/auth/reset-password`.
-   - Para producción, agrega `https://<tu-dominio>/auth/callback` y `https://<tu-dominio>/auth/reset-password`.
-
-5. Ejecuta la app:
-
-   ```bash
-   npm run dev
-   ```
+Después abre `http://localhost:5173`.
 
 ## Variables de entorno
 
-| Variable | Dónde se usa | Descripción |
+| Variable | Entorno | Uso |
 | --- | --- | --- |
-| `VITE_SUPABASE_URL` | Navegador y función de Vercel | URL del proyecto Supabase. |
-| `VITE_SUPABASE_ANON_KEY` | Navegador y función de Vercel | Clave pública anónima/publishable de Supabase. |
-| `OPENAI_API_KEY` | Solo función de Vercel | Clave de OpenAI para generar borradores; nunca debe llevar prefijo `VITE_`. |
-| `OPENAI_MODEL` | Solo función de Vercel | Opcional. Por defecto: `gpt-5.6-luna`. |
+| `VITE_SUPABASE_URL` | navegador y Vercel | URL pública del proyecto Supabase. |
+| `VITE_SUPABASE_ANON_KEY` | navegador y Vercel | Clave publishable/anónima; RLS protege los datos. |
+| `OPENAI_API_KEY` | solo servidor Vercel | Planificación asistida y reporte; nunca usar prefijo `VITE_`. |
+| `OPENAI_MODEL` | solo servidor Vercel | Opcional; por defecto `gpt-5.6-luna`. |
+| `SUPABASE_SERVICE_ROLE_KEY` | solo servidor Vercel | Necesaria únicamente para la eliminación segura de la propia cuenta desde `/api/delete-account`. |
 
-Nunca uses `SUPABASE_SERVICE_ROLE_KEY` en el frontend ni la declares con prefijo `VITE_`.
+Nunca subas `.env.local`, una service role key, tokens de usuario ni claves privadas a Git. No declares secretos con prefijo `VITE_`.
 
-## Planificación asistida y privacidad
+## Supabase
 
-`api/plan-draft.ts` es una función de Vercel que exige una sesión de Supabase válida antes de solicitar el borrador a OpenAI. Usa salida JSON estricta y `store: false`.
+Las migraciones de `supabase/migrations` son la fuente de verdad y deben aplicarse con Supabase CLI. No realices cambios de esquema que queden solo en el dashboard.
 
-El texto de origen se envía únicamente cuando la persona pulsa **Generar borrador** y no se guarda en Nivo. Solo después de revisar y pulsar **Guardar este plan** se persisten los campos confirmados, objetivos y actividades. La migración `20260912000300_add_guided_daily_planning.sql` los inserta en una única transacción mediante una función `SECURITY INVOKER`, por lo que se aplican las políticas RLS existentes.
+RLS aísla los datos privados por `auth.uid() = user_id`. Las funciones `SECURITY DEFINER` validan `auth.uid()`, propiedad del recurso y usan `search_path` fijo. Las categorías de sistema y logros son los únicos catálogos compartidos de solo lectura.
 
-## Base de datos y seguridad
+En **Authentication → URL Configuration** configura:
 
-La migración de Fase 1 crea `public.profiles`, un trigger que inicializa el perfil al crear un usuario de Auth y políticas RLS de `SELECT`, `INSERT`, `UPDATE` y `DELETE` limitadas a `auth.uid() = user_id`.
+- Site URL de producción: `https://nivo-lake.vercel.app`
+- Desarrollo: `http://localhost:5173`
+- Redirect URLs: `/auth/callback` y `/auth/reset-password` para ambos entornos.
 
-La Fase 2 crea `daily_plans`, `daily_goals`, `activities` y `daily_reflections`, con RLS por fila y comprobación de propiedad del plan padre en escrituras de entidades hijas. La migración guiada agrega recuperación, responsabilidades, familia, riesgo y estrategia sin alterar dichas políticas.
+### SMTP y correos
 
-`supabase/seed.sql` no inserta usuarios: los perfiles solo se generan mediante Auth. Los catálogos de dominio se agregarán en sus fases correspondientes.
+Supabase controla confirmación de email, recuperación y magic link. Para evitar límites del proveedor por defecto, configura un SMTP propio en **Authentication → SMTP Settings**:
 
-La Fase 5 agrega inancial_categories, inancial_transactions, monthly_budgets y category_budgets. Las categorías de sistema son solo de lectura; las personales, transacciones y presupuestos se aíslan mediante RLS. Triggers en SQL validan que ninguna transacción o presupuesto pueda referenciar una categoría o presupuesto de otra persona, aunque se conozca su UUID.
+1. Activa **Enable custom SMTP**.
+2. Ingresa host, puerto, usuario, contraseña, remitente y nombre `Nivo` del proveedor elegido.
+3. Conserva esos secretos exclusivamente en Supabase; no los copies a Vercel ni al repositorio.
+4. Personaliza las plantillas con enlaces a `https://nivo-lake.vercel.app` y un tono simple. Prueba registro y recuperación tras guardar.
 
-## Verificación
+## IA y privacidad
+
+Las rutas `/api/plan-draft` y `/api/daily-report` exigen un access token válido de Supabase. OpenAI recibe únicamente el texto y los datos personales necesarios cuando la persona pulsa generar; se usa `store: false`.
+
+Nivo no envía automáticamente finanzas, pagos ni razones privadas de actividades no realizadas a la IA. Tampoco publica mensajes de WhatsApp: solo genera un borrador editable.
+
+## PWA y producción
+
+La PWA usa un shell offline y avisa cuando hay una versión nueva para evitar caché indefinida. Las operaciones que requieren servidor muestran error si no se guardan; no se simulan como completadas offline.
+
+En Vercel configura las variables anteriores en **Production**, **Preview** y **Development** según corresponda. `OPENAI_API_KEY` y `SUPABASE_SERVICE_ROLE_KEY` deben quedar disponibles solo para funciones server-side.
+
+## Calidad
 
 ```bash
 npm run typecheck
@@ -83,13 +83,19 @@ npm run test
 npm run build
 ```
 
-## Deploy en Vercel
+El paquete de pruebas cubre esquemas, cálculos, consultas, gamificación, pagos y revisiones estáticas de RLS/RPC. La validación E2E completa requiere un proyecto Supabase de prueba con usuarios controlados; no debe ejecutarse contra producción.
 
-Configura en **Production**, **Preview** y **Development**:
+## Estructura
 
-1. `VITE_SUPABASE_URL`
-2. `VITE_SUPABASE_ANON_KEY`
-3. `OPENAI_API_KEY` (solo si deseas habilitar la planificación asistida)
-4. `OPENAI_MODEL` (opcional)
-
-El archivo `vercel.json` da prioridad al sistema de archivos para que `/api/plan-draft` se ejecute como función y conserva el fallback de la SPA para rutas del cliente. Después del deploy, agrega el dominio de producción a las Redirect URLs de Supabase Auth.
+```text
+src/
+  components/      # Design system, feedback y layout
+  features/        # Auth, onboarding, planning, progreso, finanzas, pagos, perfil
+  hooks/           # Perfil y tema
+  lib/             # Supabase, Query Client y utilidades
+  services/        # Acceso desacoplado a Supabase y APIs
+  stores/          # Estado local mínimo
+supabase/
+  migrations/      # Esquema, RLS y RPC versionados
+api/               # Funciones Vercel protegidas
+```

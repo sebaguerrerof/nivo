@@ -1,6 +1,7 @@
 import { IonContent, IonPage } from '@ionic/react'
 import { AlertCircle, CalendarClock, Pause, Play, Plus, Trash2 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -21,6 +22,7 @@ import { getTodayInTimeZone } from '@/features/planning/planning.utils'
 import { useProfile } from '@/hooks/use-profile'
 
 export function PaymentsPage() {
+  const location = useLocation()
   const { user } = useAuth()
   const { data: profile } = useProfile(user?.id)
   const timezone = profile?.timezone || DEFAULT_TIMEZONE
@@ -28,6 +30,10 @@ export function PaymentsPage() {
   const [period, setPeriod] = useState(() => getCurrentFinanceMonth(timezone))
   const [editingPayment, setEditingPayment] = useState<RecurringPayment | null | undefined>(undefined)
   const [markingPayment, setMarkingPayment] = useState<PaymentOccurrence | null>(null)
+
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get('quick') === 'payment') setEditingPayment(null)
+  }, [location.search])
   const recurring = useRecurringPayments(user?.id, true)
   const occurrences = usePaymentOccurrences(user?.id, period)
 
@@ -68,9 +74,8 @@ export function PaymentsPage() {
     if (!window.confirm(`¿Eliminar “${payment.name}” y sus registros asociados? Se borrarán sus ocurrencias y los gastos automáticos creados por Nivo. Esta acción no se puede deshacer.`)) return
     try {
       await actions.remove.mutateAsync(payment.id)
-    } catch (error) {
-      const message = typeof error === 'object' && error !== null && 'message' in error ? String(error.message) : ''
-      window.alert(message || 'No pudimos eliminar este pago. Intenta nuevamente.')
+    } catch {
+      window.alert('No pudimos eliminar este pago. Actualiza la página e intenta nuevamente.')
     }
   }
 

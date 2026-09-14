@@ -1,7 +1,7 @@
 import { IonContent, IonPage } from '@ionic/react'
 import { CircleDollarSign, Plus } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -30,6 +30,7 @@ interface TransactionSheetState {
 }
 
 export function FinancePage() {
+  const location = useLocation()
   const { user } = useAuth()
   const { data: profile } = useProfile(user?.id)
   const timezone = profile?.timezone || DEFAULT_TIMEZONE
@@ -38,6 +39,12 @@ export function FinancePage() {
   const [filters, setFilters] = useState<TransactionFilters>({ type: 'all' })
   const [sheet, setSheet] = useState<TransactionSheetState | null>(null)
   const [markingPayment, setMarkingPayment] = useState<PaymentOccurrence | null>(null)
+
+  useEffect(() => {
+    const quick = new URLSearchParams(location.search).get('quick')
+    if (quick === 'expense') setSheet({ type: 'expense', transaction: null })
+    if (quick === 'income') setSheet({ type: 'income', transaction: null })
+  }, [location.search])
   const categories = useFinancialCategories(user?.id, true)
   const overview = useFinancialOverview(user?.id, period, timezone)
   const transactions = useFinancialTransactions(user?.id, period, filters)

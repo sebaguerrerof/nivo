@@ -1,53 +1,19 @@
-import { NavLink } from 'react-router-dom'
-import { mobileNavigation } from '@/components/layout/navigation'
-import { cn } from '@/lib/utils'
+import { MoreHorizontal, Plus, WalletCards, CheckSquare2, BarChart3, CircleDollarSign, ReceiptText, Settings2, Home } from 'lucide-react'
+import { useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
+import { NotificationCenter } from '@/features/notifications/components/notification-center'
+
+const navItems = [
+  { label: 'Hoy', href: '/today', icon: CheckSquare2 },
+  { label: 'Progreso', href: '/progress', icon: BarChart3 },
+  { label: 'Finanzas', href: '/finances', icon: WalletCards },
+]
 
 export function BottomNavigation() {
-  return (
-    <nav aria-label="Navegación móvil" className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--border)] bg-[color:var(--surface)/0.94] px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur lg:hidden">
-      <div className="mx-auto grid max-w-md grid-cols-5">
-        {mobileNavigation.map(({ label, href, icon: Icon, available }) => {
-          const isPrimaryAction = label === 'Crear'
+  const [quickOpen, setQuickOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
 
-          if (available && href) {
-            return (
-              <NavLink
-                activeClassName="text-teal-700 dark:text-teal-300"
-                className="flex min-h-12 flex-col items-center justify-center gap-1 text-[10px] font-medium text-[var(--foreground-subtle)]"
-                key={label}
-                to={href}
-              >
-                <Icon aria-hidden="true" className="size-[19px]" />
-                {label}
-              </NavLink>
-            )
-          }
+  const close = () => { setQuickOpen(false); setMoreOpen(false) }
 
-          return (
-            <span
-              aria-disabled="true"
-              className={cn(
-                'flex min-h-12 cursor-not-allowed flex-col items-center justify-center gap-1 text-[10px] font-medium text-[var(--foreground-subtle)]',
-                isPrimaryAction && '-mt-6',
-              )}
-              key={label}
-              title="Disponible en una próxima fase"
-            >
-              <span
-                className={cn(
-                  'grid place-items-center',
-                  isPrimaryAction
-                    ? 'size-12 rounded-2xl bg-teal-700 text-white shadow-lg shadow-teal-900/20'
-                    : 'text-[var(--foreground-subtle)]',
-                )}
-              >
-                <Icon aria-hidden="true" className={isPrimaryAction ? 'size-5' : 'size-[19px]'} />
-              </span>
-              {label}
-            </span>
-          )
-        })}
-      </div>
-    </nav>
-  )
+  return <><nav aria-label="Navegación móvil" className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--border)] bg-[color:var(--surface)/0.94] px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur lg:hidden"><div className="mx-auto grid max-w-md grid-cols-5"><NavLink activeClassName="text-teal-700 dark:text-teal-300" className="flex min-h-12 flex-col items-center justify-center gap-1 text-[10px] font-medium text-[var(--foreground-subtle)]" to={navItems[0].href}><CheckSquare2 aria-hidden="true" className="size-[19px]" />Hoy</NavLink><NavLink activeClassName="text-teal-700 dark:text-teal-300" className="flex min-h-12 flex-col items-center justify-center gap-1 text-[10px] font-medium text-[var(--foreground-subtle)]" to={navItems[1].href}><BarChart3 aria-hidden="true" className="size-[19px]" />Progreso</NavLink><button aria-expanded={quickOpen} aria-label="Abrir acciones rápidas" className="-mt-6 flex min-h-12 flex-col items-center justify-center gap-1 text-[10px] font-medium text-teal-700 dark:text-teal-300" onClick={() => { setQuickOpen((value) => !value); setMoreOpen(false) }} type="button"><span className="grid size-12 place-items-center rounded-2xl bg-teal-700 text-white shadow-lg shadow-teal-900/20"><Plus aria-hidden="true" className="size-5" /></span><span className="mt-1">Agregar</span></button><NavLink activeClassName="text-teal-700 dark:text-teal-300" className="flex min-h-12 flex-col items-center justify-center gap-1 text-[10px] font-medium text-[var(--foreground-subtle)]" to={navItems[2].href}><WalletCards aria-hidden="true" className="size-[19px]" />Finanzas</NavLink><button aria-expanded={moreOpen} className="flex min-h-12 flex-col items-center justify-center gap-1 text-[10px] font-medium text-[var(--foreground-subtle)]" onClick={() => { setMoreOpen((value) => !value); setQuickOpen(false) }} type="button"><MoreHorizontal aria-hidden="true" className="size-[19px]" />Más</button></div></nav>{quickOpen || moreOpen ? <button aria-label="Cerrar menú" className="fixed inset-0 z-40 bg-slate-950/30 lg:hidden" onClick={close} type="button" /> : null}{quickOpen ? <section aria-label="Acciones rápidas" aria-modal="true" className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-50 mx-auto max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-2xl lg:hidden" role="dialog"><p className="px-2 pb-2 pt-1 text-sm font-semibold text-[var(--foreground)]">Agregar rápido</p><div className="grid gap-1">{[{ label: 'Nueva actividad', href: '/today?quick=activity', icon: CheckSquare2 }, { label: 'Nuevo gasto', href: '/finances?quick=expense', icon: CircleDollarSign }, { label: 'Nuevo ingreso', href: '/finances?quick=income', icon: WalletCards }, { label: 'Nuevo pago', href: '/payments?quick=payment', icon: ReceiptText }].map(({ label, href, icon: Icon }) => <Link className="flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--surface-muted)]" key={label} onClick={close} to={href}><Icon aria-hidden="true" className="size-4 text-teal-700 dark:text-teal-300" />{label}</Link>)}</div></section> : null}{moreOpen ? <section aria-label="Más secciones" aria-modal="true" className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-50 mx-auto max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-2xl lg:hidden" role="dialog"><div className="flex items-center justify-between gap-3 px-2 pb-2 pt-1"><p className="text-sm font-semibold text-[var(--foreground)]">Más</p><NotificationCenter /></div><div className="grid gap-1">{[{ label: 'Inicio', href: '/dashboard', icon: Home }, { label: 'Pagos', href: '/payments', icon: ReceiptText }, { label: 'Configuración', href: '/profile', icon: Settings2 }].map(({ label, href, icon: Icon }) => <Link className="flex min-h-12 items-center gap-3 rounded-xl px-3 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--surface-muted)]" key={label} onClick={close} to={href}><Icon aria-hidden="true" className="size-4 text-teal-700 dark:text-teal-300" />{label}</Link>)}</div></section> : null}</>
 }

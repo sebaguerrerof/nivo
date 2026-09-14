@@ -55,6 +55,13 @@ export function TodayPage() {
   const [feedback, setFeedback] = useState<string | null>(null)
   const bundle = dailyPlan.data
   const plan = bundle?.plan
+
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get('quick') === 'activity' && plan && !plan.closed_at) {
+      setActiveActivity(undefined)
+      setActivityMode('create')
+    }
+  }, [location.search, plan])
   const canFillEmptyPlanWithDraft = Boolean(
     plan
     && !plan.closed_at
