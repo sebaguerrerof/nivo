@@ -12,6 +12,7 @@
   --nav-item-active-foreground: #f7fbf9;
   --nav-item-active-icon: #72e3d2;
   --nav-item-focus: #0f766e;
+  --link: #0f766e;
   --background: var(--canvas);
   --surface: #ffffff;
   --surface-subtle: #f0f4f3;
@@ -57,6 +58,7 @@
   --nav-item-active-foreground: #f1faf6;
   --nav-item-active-icon: #67e8d5;
   --nav-item-focus: #5eead4;
+  --link: #5eead4;
   --background: var(--canvas);
   --surface: #111a19;
   --surface-subtle: #172422;
@@ -114,6 +116,26 @@ input,
 select,
 textarea {
   -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: var(--link);
+  cursor: pointer;
+  text-decoration-color: transparent;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition: color var(--transition-base), text-decoration-color var(--transition-base);
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+a:focus-visible {
+  border-radius: 0.25rem;
+  outline: 2px solid var(--nav-item-focus);
+  outline-offset: 3px;
 }
 
 button,
