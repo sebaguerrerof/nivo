@@ -139,6 +139,11 @@ a:focus-visible {
   outline-offset: 3px;
 }
 
+button.bg-teal-700:not([class*='size-']):not([class*='rounded-full']) {
+  border-radius: var(--radius-button) !important;
+  padding-inline: 1.25rem !important;
+}
+
 button,
 input,
 select {
