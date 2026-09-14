@@ -3,6 +3,8 @@ import type { Session } from '@supabase/supabase-js'
 import { authService, type AuthUser } from '@/services/auth.service'
 import { isSupabaseConfigured } from '@/lib/supabase/client'
 
+const SESSION_INITIALIZATION_TIMEOUT_MS = 8_000
+
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
 
 interface AuthContextValue {
@@ -30,16 +32,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(nextSession)
       setStatus(nextSession ? 'authenticated' : 'unauthenticated')
     }
+    const initializationTimer = window.setTimeout(() => setCurrentSession(null), SESSION_INITIALIZATION_TIMEOUT_MS)
+    const resolveInitialSession = (nextSession: Session | null) => {
+      window.clearTimeout(initializationTimer)
+      setCurrentSession(nextSession)
+    }
 
     void authService
       .getSession()
-      .then(setCurrentSession)
-      .catch(() => setCurrentSession(null))
+      .then(resolveInitialSession)
+      .catch(() => resolveInitialSession(null))
 
     const { data } = authService.onAuthStateChange((_event, nextSession) => setCurrentSession(nextSession))
 
     return () => {
       active = false
+      window.clearTimeout(initializationTimer)
       data.subscription.unsubscribe()
     }
   }, [])

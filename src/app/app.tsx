@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { IonReactRouter } from '@ionic/react-router'
 import { AppRoutes } from '@/app/app-routes'
 import { AppErrorBoundary } from '@/components/feedback/app-error-boundary'
+import { PwaUpdatePrompt } from '@/components/feedback/pwa-update-prompt'
 import { AuthProvider } from '@/features/auth/auth-context'
 import { ThemeController } from '@/hooks/use-theme'
 import { queryClient } from '@/lib/query-client'
@@ -11,5 +12,5 @@ import { queryClient } from '@/lib/query-client'
 setupIonicReact({ mode: 'md' })
 
 export function App() {
-  return <IonApp><AppErrorBoundary><MotionConfig reducedMotion="user"><QueryClientProvider client={queryClient}><ThemeController /><IonReactRouter><AuthProvider><AppRoutes /></AuthProvider></IonReactRouter></QueryClientProvider></MotionConfig></AppErrorBoundary></IonApp>
+  return <IonApp><AppErrorBoundary><MotionConfig reducedMotion="user"><QueryClientProvider client={queryClient}><ThemeController /><IonReactRouter><AuthProvider><AppRoutes /><PwaUpdatePrompt /></AuthProvider></IonReactRouter></QueryClientProvider></MotionConfig></AppErrorBoundary></IonApp>
 }

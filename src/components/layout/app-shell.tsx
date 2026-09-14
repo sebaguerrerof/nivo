@@ -4,7 +4,6 @@ import { BottomNavigation } from '@/components/layout/bottom-navigation'
 import { MobileHeader } from '@/components/layout/mobile-header'
 import { Sidebar } from '@/components/layout/sidebar'
 import { OfflineBanner } from '@/components/feedback/offline-banner'
-import { PwaUpdatePrompt } from '@/components/feedback/pwa-update-prompt'
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -16,7 +15,6 @@ export function AppShell({ children }: { children: ReactNode }) {
         <MobileHeader />
         <div className="relative min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-4.5rem)]">{children}</div>
       </div>
-      <PwaUpdatePrompt />
       <BottomNavigation />
     </div>
   )
