@@ -4,20 +4,20 @@ import { LoaderCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex min-h-11 items-center justify-center gap-2 rounded-[var(--radius-control)] px-4 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)] disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex min-h-11 items-center justify-center gap-2 rounded-[var(--radius-button)] px-5 text-sm font-semibold tracking-[-0.01em] transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)] disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        primary: 'bg-teal-700 text-white shadow-sm shadow-teal-900/15 hover:bg-teal-800 active:scale-[0.98]',
+        primary: 'bg-teal-700 text-white shadow-md shadow-teal-900/15 hover:-translate-y-px hover:bg-teal-800 hover:shadow-lg hover:shadow-teal-900/15 active:translate-y-0 active:scale-[0.985]',
         secondary:
-          'border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-sm hover:bg-[var(--surface-muted)] active:scale-[0.98]',
-        ghost: 'text-[var(--foreground-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)]',
-        danger: 'bg-rose-600 text-white shadow-sm hover:bg-rose-700 active:scale-[0.98]',
+          'border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-sm hover:-translate-y-px hover:bg-[var(--surface-muted)] hover:shadow-md active:translate-y-0 active:scale-[0.985]',
+        ghost: 'text-[var(--foreground-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)] active:scale-[0.985]',
+        danger: 'bg-rose-600 text-white shadow-md shadow-rose-950/10 hover:-translate-y-px hover:bg-rose-700 hover:shadow-lg hover:shadow-rose-950/10 active:translate-y-0 active:scale-[0.985]',
       },
       size: {
-        default: 'px-4',
-        sm: 'min-h-9 rounded-[10px] px-3 text-xs',
-        icon: 'size-11 rounded-[var(--radius-control)] p-0',
+        default: '',
+        sm: 'min-h-9 rounded-[0.875rem] px-3.5 text-xs',
+        icon: 'size-11 rounded-[var(--radius-button)] p-0',
       },
     },
     defaultVariants: {
