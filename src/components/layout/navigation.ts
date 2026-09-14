@@ -27,6 +27,15 @@ const sectionTitles: Array<{ href: string; title: string }> = [
   { href: '/profile', title: 'Configuración' },
 ]
 
+function normalizePath(pathname: string) {
+  return pathname.split(/[?#]/, 1)[0] || '/'
+}
+
+export function isNavigationPathActive(pathname: string, href: string) {
+  const currentPath = normalizePath(pathname)
+  return currentPath === href || currentPath.startsWith(`${href}/`)
+}
+
 export function getCurrentSectionTitle(pathname: string) {
-  return sectionTitles.find((section) => pathname.startsWith(section.href))?.title ?? 'Nivo'
+  return sectionTitles.find((section) => isNavigationPathActive(pathname, section.href))?.title ?? 'Nivo'
 }

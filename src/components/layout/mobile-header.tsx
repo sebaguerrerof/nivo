@@ -14,5 +14,5 @@ export function MobileHeader() {
   const timezone = profile?.timezone || DEFAULT_TIMEZONE
   const gamification = useGamificationSummary(user?.id, getTodayInTimeZone(timezone))
 
-  return <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[var(--border-subtle)] bg-[color:var(--canvas)/0.9] px-4 backdrop-blur-xl lg:hidden"><NivoLogo className="gap-2" /><div className="flex items-center gap-0.5"><XpIndicator mobile summary={gamification.data} /><NotificationButton /><UserMenu mobile /></div></header>
+  return <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[var(--chrome-border)] bg-[var(--topbar-background)] px-4 backdrop-blur-xl lg:hidden"><NivoLogo className="gap-2" /><div className="flex items-center gap-0.5"><XpIndicator mobile summary={gamification.data} /><NotificationButton /><UserMenu mobile /></div></header>
 }

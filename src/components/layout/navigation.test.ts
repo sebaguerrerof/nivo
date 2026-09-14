@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getCurrentSectionTitle, sidebarNavigation } from '@/components/layout/navigation'
+import { getCurrentSectionTitle, isNavigationPathActive, sidebarNavigation } from '@/components/layout/navigation'
 import { getUserInitials } from '@/components/layout/user-menu.utils'
 
 describe('app navigation presentation', () => {
@@ -8,6 +8,14 @@ describe('app navigation presentation', () => {
     expect(getCurrentSectionTitle('/today?date=2026-09-14')).toBe('Hoy')
     expect(getCurrentSectionTitle('/finances')).toBe('Finanzas')
     expect(getCurrentSectionTitle('/missing')).toBe('Nivo')
+  })
+
+  it('matches only the intended section while preserving query and subroute navigation', () => {
+    expect(isNavigationPathActive('/today?date=2026-09-14', '/today')).toBe(true)
+    expect(isNavigationPathActive('/finances/transactions', '/finances')).toBe(true)
+    expect(isNavigationPathActive('/payments?quick=payment', '/payments')).toBe(true)
+    expect(isNavigationPathActive('/finances-archive', '/finances')).toBe(false)
+    expect(isNavigationPathActive('/profile', '/payments')).toBe(false)
   })
 
   it('keeps the sidebar limited to available MVP destinations', () => {

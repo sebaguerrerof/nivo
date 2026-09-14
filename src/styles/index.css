@@ -4,6 +4,14 @@
 
 :root {
   --canvas: #f7f8f7;
+  --sidebar-background: #f3f5f4;
+  --topbar-background: #f7f8f7e8;
+  --chrome-border: #e2e8e5;
+  --nav-item-hover: #e8edeb;
+  --nav-item-active: #172522;
+  --nav-item-active-foreground: #f7fbf9;
+  --nav-item-active-icon: #72e3d2;
+  --nav-item-focus: #0f766e;
   --background: var(--canvas);
   --surface: #ffffff;
   --surface-subtle: #f0f4f3;
@@ -41,6 +49,14 @@
 
 :root.dark {
   --canvas: #0b1110;
+  --sidebar-background: #0e1715;
+  --topbar-background: #0b1110e8;
+  --chrome-border: #23332f;
+  --nav-item-hover: #192724;
+  --nav-item-active: #233530;
+  --nav-item-active-foreground: #f1faf6;
+  --nav-item-active-icon: #67e8d5;
+  --nav-item-focus: #5eead4;
   --background: var(--canvas);
   --surface: #111a19;
   --surface-subtle: #172422;
@@ -109,6 +125,34 @@ select {
 ion-content {
   --background: var(--background);
   --color: var(--foreground);
+}
+
+.nivo-sidebar-item {
+  color: var(--foreground-muted);
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.nivo-sidebar-item .nivo-sidebar-icon {
+  color: var(--foreground-subtle);
+}
+
+.nivo-sidebar-item:hover {
+  background: var(--nav-item-hover);
+  color: var(--foreground);
+}
+
+.nivo-sidebar-item:hover .nivo-sidebar-icon {
+  color: var(--foreground);
+}
+
+.nivo-sidebar-item.active {
+  background: var(--nav-item-active);
+  color: var(--nav-item-active-foreground);
+  font-weight: 600;
+}
+
+.nivo-sidebar-item.active .nivo-sidebar-icon {
+  color: var(--nav-item-active-icon);
 }
 
 ::selection {
