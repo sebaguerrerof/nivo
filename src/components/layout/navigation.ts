@@ -1,11 +1,9 @@
-import { BarChart3, CalendarDays, CheckSquare2, CircleDollarSign, Home, Settings2, Target, WalletCards } from 'lucide-react'
+import { BarChart3, CheckSquare2, CircleDollarSign, Home, Settings2, WalletCards } from 'lucide-react'
 import type { NavigationItem } from '@/types/navigation'
 
 export const sidebarNavigation: NavigationItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: Home, available: true },
-  { label: 'Mi día', href: '/today', icon: CheckSquare2, available: true },
-  { label: 'Calendario', icon: CalendarDays, available: false },
-  { label: 'Hábitos', icon: Target, available: false },
+  { label: 'Inicio', href: '/dashboard', icon: Home, available: true },
+  { label: 'Hoy', href: '/today', icon: CheckSquare2, available: true },
   { label: 'Progreso', href: '/progress', icon: BarChart3, available: true },
   { label: 'Finanzas', href: '/finances', icon: WalletCards, available: true },
   { label: 'Pagos', href: '/payments', icon: CircleDollarSign, available: true },
@@ -19,3 +17,16 @@ export const mobileNavigation: NavigationItem[] = [
   { label: 'Progreso', href: '/progress', icon: BarChart3, available: true },
   { label: 'Perfil', href: '/profile', icon: Settings2, available: true },
 ]
+
+const sectionTitles: Array<{ href: string; title: string }> = [
+  { href: '/dashboard', title: 'Inicio' },
+  { href: '/today', title: 'Hoy' },
+  { href: '/progress', title: 'Progreso' },
+  { href: '/finances', title: 'Finanzas' },
+  { href: '/payments', title: 'Pagos' },
+  { href: '/profile', title: 'Configuración' },
+]
+
+export function getCurrentSectionTitle(pathname: string) {
+  return sectionTitles.find((section) => pathname.startsWith(section.href))?.title ?? 'Nivo'
+}

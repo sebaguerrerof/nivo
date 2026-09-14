@@ -3,15 +3,23 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f8fafc;
+  --canvas: #f7f8f7;
+  --background: var(--canvas);
   --surface: #ffffff;
-  --surface-muted: #f1f5f9;
+  --surface-subtle: #f0f4f3;
+  --surface-muted: var(--surface-subtle);
+  --surface-elevated: #ffffff;
   --foreground: #172033;
   --foreground-muted: #5f6b7c;
   --foreground-subtle: #8c97a8;
-  --border: #e2e8f0;
-  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.03), 0 8px 24px rgb(15 23 42 / 0.035);
+  --border-subtle: #e4e9e7;
+  --border-strong: #d6dfdb;
+  --border: var(--border-subtle);
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.025), 0 10px 28px rgb(15 23 42 / 0.035);
+  --shadow-elevated: 0 1px 2px rgb(15 23 42 / 0.04), 0 18px 45px rgb(15 23 42 / 0.075);
+  --radius-control: 0.75rem;
   --radius-card: 1rem;
+  --radius-hero: 1.5rem;
   --transition-base: 180ms ease;
   --chart-primary: #0f766e;
   --chart-secondary: #0f766e99;
@@ -32,14 +40,20 @@
 }
 
 :root.dark {
-  --background: #0c111b;
-  --surface: #131b29;
-  --surface-muted: #1b2636;
+  --canvas: #0b1110;
+  --background: var(--canvas);
+  --surface: #111a19;
+  --surface-subtle: #172422;
+  --surface-muted: var(--surface-subtle);
+  --surface-elevated: #16211f;
   --foreground: #edf2f7;
   --foreground-muted: #a7b2c2;
   --foreground-subtle: #788596;
-  --border: #263447;
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.16), 0 12px 30px rgb(0 0 0 / 0.12);
+  --border-subtle: #253431;
+  --border-strong: #344641;
+  --border: var(--border-subtle);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.14), 0 12px 30px rgb(0 0 0 / 0.11);
+  --shadow-elevated: 0 2px 4px rgb(0 0 0 / 0.18), 0 20px 48px rgb(0 0 0 / 0.2);
   --chart-primary: #2dd4bf;
   --chart-secondary: #2dd4bf99;
   --chart-accent: #fbbf24;
@@ -76,6 +90,14 @@ body {
   min-width: 320px;
   color: var(--foreground);
   text-rendering: optimizeLegibility;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
 }
 
 button,
