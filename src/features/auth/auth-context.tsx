@@ -3,7 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import { authService, type AuthUser } from '@/services/auth.service'
 import { isSupabaseConfigured } from '@/lib/supabase/client'
 
-const SESSION_INITIALIZATION_TIMEOUT_MS = 8_000
+const SESSION_INITIALIZATION_TIMEOUT_MS = 3_000
 
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated'
 
