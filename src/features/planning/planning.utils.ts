@@ -42,6 +42,14 @@ export function getNextCalendarDate(date: string) {
   return next.toISOString().slice(0, 10)
 }
 
+export function getPreviousCalendarDate(date: string) {
+  if (!isCalendarDate(date)) return date
+
+  const [year, month, day] = date.split('-').map(Number)
+  const previous = new Date(Date.UTC(year, month - 1, day - 1))
+  return previous.toISOString().slice(0, 10)
+}
+
 export function getDateFromPlanSearch(search: string) {
   const date = new URLSearchParams(search).get('date')
   return isCalendarDate(date) ? date : null

@@ -5,6 +5,7 @@ import {
   getDailyProgress,
   getDateFromPlanSearch,
   getNextCalendarDate,
+  getPreviousCalendarDate,
   getNextGoalPosition,
   getTimelineActivities,
   getTodayInTimeZone,
@@ -62,6 +63,7 @@ describe('planning utilities', () => {
   it('validates date parameters and calculates the following calendar date', () => {
     expect(getNextCalendarDate('2026-09-12')).toBe('2026-09-13')
     expect(getNextCalendarDate('2026-12-31')).toBe('2027-01-01')
+    expect(getPreviousCalendarDate('2026-01-01')).toBe('2025-12-31')
     expect(getDateFromPlanSearch('?date=2026-09-13')).toBe('2026-09-13')
     expect(getDateFromPlanSearch('?date=2026-02-29')).toBeNull()
     expect(getDateFromPlanSearch('?date=not-a-date')).toBeNull()

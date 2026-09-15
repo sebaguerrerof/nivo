@@ -1,5 +1,3 @@
-import { Card } from '@/components/ui/card'
-
 export function PlanningSkeleton() {
-  return <div className="grid gap-5"><div className="h-9 w-48 animate-pulse rounded-lg bg-[var(--surface-muted)]" /><Card className="h-44 animate-pulse bg-[var(--surface-muted)]" /><Card className="h-64 animate-pulse bg-[var(--surface-muted)]" /></div>
+  return <div aria-label="Cargando tu día" className="grid gap-7"><div className="h-9 w-44 animate-pulse rounded-lg bg-[var(--surface-muted)]" /><div className="h-52 animate-pulse rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface-muted)]" /><div className="grid gap-7 lg:grid-cols-[minmax(17rem,0.72fr)_minmax(0,1.28fr)]"><div className="h-56 animate-pulse border-t border-[var(--border)]" /><div className="grid gap-6"><div className="h-40 animate-pulse rounded-[var(--radius-card)] bg-[var(--surface-muted)]" /><div className="h-64 animate-pulse border-t border-[var(--border)]" /></div></div></div>
 }
