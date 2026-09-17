@@ -17,9 +17,10 @@ interface BudgetSectionProps {
   currency: Currency
   categories: FinancialCategory[]
   overview: FinancialOverview
+  initiallyEditing?: boolean
 }
 
-export function BudgetSection({ userId, period, currency, categories, overview }: BudgetSectionProps) {
+export function BudgetSection({ userId, period, currency, categories, overview, initiallyEditing = false }: BudgetSectionProps) {
   const [editingBudget, setEditingBudget] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const budgetMutation = useMonthlyBudgetActions(userId)
@@ -29,6 +30,12 @@ export function BudgetSection({ userId, period, currency, categories, overview }
   useEffect(() => {
     form.reset({ amount: overview.budget?.amount ?? 0, savingsTarget: overview.budget?.savings_target ?? 0 })
   }, [form, overview.budget])
+
+  useEffect(() => {
+    if (initiallyEditing) {
+      setEditingBudget(true)
+    }
+  }, [initiallyEditing])
 
   const submit = form.handleSubmit(async (values) => {
     try {

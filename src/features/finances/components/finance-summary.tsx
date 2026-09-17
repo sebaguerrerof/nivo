@@ -1,1 +1,0 @@
-export { FinanceHero as FinanceSummary } from '@/features/finances/components/finance-hero'
