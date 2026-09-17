@@ -95,7 +95,7 @@ Base auditada: `8ecb7c0 feat: redesign daily execution and payments`
 - P1 abiertos: 0.
 - P2 abiertos: 0.
 - Se añadió una prueba unitaria para las rutas rápidas de Finanzas, incluido `quick=budget`.
-- Antes del cierre técnico se ejecutarán typecheck, lint, tests, build y `git diff --check` sobre este estado final.
+- Validación final ejecutada: `npm run lint`, `npm run typecheck`, `npm test -- --run` (24 archivos y 80 pruebas), `npm run build` y `git diff --check`.
 - Permanece pendiente el smoke manual autenticado en móvil/PWA (P3-03), porque el runtime de automatización local no expuso un navegador utilizable. No impide el cierre técnico ni se presenta como verificado.
 
 ## Restricciones de Fase 9
